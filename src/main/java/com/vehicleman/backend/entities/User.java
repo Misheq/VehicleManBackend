@@ -2,11 +2,14 @@ package com.vehicleman.backend.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.hibernate.annotations.GenericGenerator;
 
 
 @NamedQueries({ 
@@ -22,20 +25,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class User {
 	
 	@Id
-	@Column(name = "id")
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@Column(name = "id", unique = true, nullable = false)
 	private String id;
 	
-	@Column(name = "first_name")
+	@Column(name = "first_name", nullable = false)
 	private String firstName;
 	
-	@Column(name = "last_name")
+	@Column(name = "last_name", nullable = false)
 	private String lastName;
 	
-	@Column(name = "email")
+	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 	
+	// TODO: add to db
+	
+	@Column(name = "phone")
+	private String phone;
+	
+	@Column(name = "company_name")
+	private String companyName;
+	
 	public User() {
-		
+		phone = "";
+		companyName = "";
 	}
 
 	public String getId() {
@@ -68,6 +82,22 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
 	@Override

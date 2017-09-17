@@ -31,7 +31,7 @@ public class UserService {
 	}
 	
 	@GET
-	@Path("user/{id}")
+	@Path("/{id}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public User getUser(@PathParam("id") String id) {
 		
@@ -39,7 +39,6 @@ public class UserService {
 	}
 	
 	@POST	
-	@Path("user")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public User createUser(User user) {
 		
@@ -50,7 +49,7 @@ public class UserService {
 	}
 	
 	@PUT	
-	@Path("user/{id}")
+	@Path("/{id}")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public User updateUser(@PathParam("id") String id, User user) {
 		
@@ -61,7 +60,7 @@ public class UserService {
 	}
 	
 	@DELETE
-	@Path("user/{id}")
+	@Path("/{id}")
 	public Response killUser(@PathParam("id") String id) {
 
 		userDao.deleteUser(id);			

@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.vehicleman</groupId>
-	<artifactId>backend</artifactId>
+	<artifactId>vehicleman</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>backend</name>
+	<name>vehicleman</name>
 
 	<build>
-		<finalName>backend</finalName>
+		<finalName>vehicleman</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
