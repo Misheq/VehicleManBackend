@@ -4,11 +4,19 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.annotations.GenericGenerator;
+
+@NamedQueries({ 
+	
+	@NamedQuery(name = "Person.get_All",	query = "from Person a") ,
+	@NamedQuery(name = "Person.get_Person_By_Id",	query = "from Person a where a.id = :id") 		
+})
 
 @Entity
 @Table(name = "persons")
@@ -18,7 +26,7 @@ public class Person {
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(name = "id", length = 45, unique = true, nullable = false)
 	String id;
 	
 	@Column(name = "first_name", nullable = false)
@@ -37,10 +45,13 @@ public class Person {
 	String phone;
 	
 //	@OneToMany
-	Vehicle assignedVehicle;
+//	Vehicle assignedVehicle;
 
 	public Person() {
-
+		
+		// nullable fields are initialized to empty string
+		companyName = "";
+		phone = "";
 	}
 
 	public String getId() {
@@ -91,11 +102,11 @@ public class Person {
 		this.phone = phone;
 	}
 
-	public Vehicle getAssignedVehicle() {
-		return assignedVehicle;
-	}
-
-	public void setAssignedVehicle(Vehicle assignedVehicle) {
-		this.assignedVehicle = assignedVehicle;
-	}
+//	public Vehicle getAssignedVehicle() {
+//		return assignedVehicle;
+//	}
+//
+//	public void setAssignedVehicle(Vehicle assignedVehicle) {
+//		this.assignedVehicle = assignedVehicle;
+//	}
 }

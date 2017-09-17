@@ -25,7 +25,7 @@ public class Vehicle {
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(name = "id", length = 45, unique = true, nullable = false)
 	String id;
 	
 	@Column(name = "vehicle_type", nullable = false)

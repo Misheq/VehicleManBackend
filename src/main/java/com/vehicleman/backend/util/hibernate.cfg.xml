@@ -25,6 +25,7 @@
    <!-- List of XML mapping files -->
    <mapping class="com.vehicleman.backend.entities.User"/>
    <mapping class="com.vehicleman.backend.entities.Vehicle"/>
+   <mapping class="com.vehicleman.backend.entities.Person"/>
 
 </session-factory>
 </hibernate-configuration>
