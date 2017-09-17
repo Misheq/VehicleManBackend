@@ -2,9 +2,13 @@ package com.vehicleman.backend.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "persons")
@@ -12,25 +16,27 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Person {
 
 	@Id
-	@Column(name = "id")
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@Column(name = "id", unique = true, nullable = false)
 	String id;
 	
-	@Column(name = "first_name")
+	@Column(name = "first_name", nullable = false)
 	String firstName;
 	
-	@Column(name = "last_name")
+	@Column(name = "last_name", nullable = false)
 	String lastName;
 	
-	@Column(name = "company_name")
-	String companyName;
-	
-	@Column(name = "email")
+	@Column(name = "email", nullable = false)
 	String email;
 	
-	@Column(name = "phone")
+	@Column(name = "company_name", nullable = true)
+	String companyName;
+	
+	@Column(name = "phone", nullable = true)
 	String phone;
 	
-	@Column(name = "assigned_vehicle")
+//	@OneToMany
 	Vehicle assignedVehicle;
 
 	public Person() {

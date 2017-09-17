@@ -13,57 +13,57 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.vehicleman.backend.dao.UserDAO;
-import com.vehicleman.backend.entities.User;
+import com.vehicleman.backend.dao.VehicleDAO;
+import com.vehicleman.backend.entities.Vehicle;
 
-@Path("users")
-public class UserService {
+@Path("vehicles")
+public class VehicleService {
 	
-	UserDAO userDao = new UserDAO();
+	VehicleDAO vehicleDao = new VehicleDAO();
 	
 	@GET
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public List<User> getUsers() {
+	public List<Vehicle> getVehicles() {
 		
-		List<User> users = userDao.getUsers();
+		List<Vehicle> vehicles = vehicleDao.getVehicles();
 		
-		return users;
+		return vehicles;
 	}
 	
 	@GET
 	@Path("/{id}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public User getUser(@PathParam("id") String id) {
+	public Vehicle getVehicle(@PathParam("id") String id) {
 		
-		return userDao.getUser(id);
+		return vehicleDao.getVehicle(id);
 	}
 	
 	@POST	
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public User createUser(User user) {
+	public Vehicle createVehicle(Vehicle vehicle) {
 		
-		userDao.createUser(user);
+		vehicleDao.createVehicle(vehicle);
 		
 		// return response code and message and maybe created entity
-		return user;
+		return vehicle;
 	}
 	
 	@PUT	
 	@Path("/{id}")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public User updateUser(@PathParam("id") String id, User user) {
+	public Vehicle updateVehicle(@PathParam("id") String id, Vehicle vehicle) {
 		
-		user.setId(id);
-		userDao.updateUser(user);
+		vehicle.setId(id);
+		vehicleDao.updateVehicle(vehicle);
 		
-		return user;
+		return vehicle;
 	}
 	
 	@DELETE
 	@Path("/{id}")
-	public Response deleteUser(@PathParam("id") String id) {
+	public Response deleteVehicle(@PathParam("id") String id) {
 
-		userDao.deleteUser(id);			
+		vehicleDao.deleteVehicle(id);			
 		
 		return Response.noContent().build();
 	}

@@ -39,15 +39,15 @@ public class User {
 	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 	
-	// TODO: add to db
-	
-	@Column(name = "phone")
+	@Column(name = "phone", nullable = true)
 	private String phone;
 	
-	@Column(name = "company_name")
+	@Column(name = "company_name", nullable = true)
 	private String companyName;
 	
 	public User() {
+		
+		// initialize default value to nullable fields
 		phone = "";
 		companyName = "";
 	}
