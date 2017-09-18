@@ -6,17 +6,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.annotations.GenericGenerator;
 
-@NamedQueries({ 
-	
-	@NamedQuery(name = "Person.get_All",	query = "from Person a") ,
-	@NamedQuery(name = "Person.get_Person_By_Id",	query = "from Person a where a.id = :id") 		
-})
+@NamedQueries({
+
+		@NamedQuery(name = "Person.get_All", query = "from Person a"), @NamedQuery(name = "Person.get_Person_By_Id", query = "from Person a where a.id = :id") })
 
 @Entity
 @Table(name = "persons")
@@ -28,27 +25,27 @@ public class Person {
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@Column(name = "id", length = 45, unique = true, nullable = false)
 	String id;
-	
+
 	@Column(name = "first_name", nullable = false)
 	String firstName;
-	
+
 	@Column(name = "last_name", nullable = false)
 	String lastName;
-	
+
 	@Column(name = "email", nullable = false)
 	String email;
-	
+
 	@Column(name = "company_name", nullable = true)
 	String companyName;
-	
+
 	@Column(name = "phone", nullable = true)
 	String phone;
-	
-//	@OneToMany
-//	Vehicle assignedVehicle;
+
+	//	@OneToMany
+	//	Vehicle assignedVehicle;
 
 	public Person() {
-		
+
 		// nullable fields are initialized to empty string
 		companyName = "";
 		phone = "";
@@ -102,11 +99,11 @@ public class Person {
 		this.phone = phone;
 	}
 
-//	public Vehicle getAssignedVehicle() {
-//		return assignedVehicle;
-//	}
-//
-//	public void setAssignedVehicle(Vehicle assignedVehicle) {
-//		this.assignedVehicle = assignedVehicle;
-//	}
+	//	public Vehicle getAssignedVehicle() {
+	//		return assignedVehicle;
+	//	}
+	//
+	//	public void setAssignedVehicle(Vehicle assignedVehicle) {
+	//		this.assignedVehicle = assignedVehicle;
+	//	}
 }
