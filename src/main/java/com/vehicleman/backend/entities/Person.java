@@ -1,11 +1,15 @@
 package com.vehicleman.backend.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -41,14 +45,15 @@ public class Person {
 	@Column(name = "phone", nullable = true)
 	String phone;
 
-	//	@OneToMany
-	//	Vehicle assignedVehicle;
+	@OneToMany(mappedBy = "person")
+	List<Vehicle> assignedVehicles;
 
 	public Person() {
 
 		// nullable fields are initialized to empty string
 		companyName = "";
 		phone = "";
+		assignedVehicles = new ArrayList<>();
 	}
 
 	public String getId() {
@@ -99,11 +104,11 @@ public class Person {
 		this.phone = phone;
 	}
 
-	//	public Vehicle getAssignedVehicle() {
-	//		return assignedVehicle;
-	//	}
-	//
-	//	public void setAssignedVehicle(Vehicle assignedVehicle) {
-	//		this.assignedVehicle = assignedVehicle;
-	//	}
+	public List<Vehicle> getAssignedVehicle() {
+		return assignedVehicles;
+	}
+
+	public void setAssignedVehicle(List<Vehicle> assignedVehicles) {
+		this.assignedVehicles = assignedVehicles;
+	}
 }
