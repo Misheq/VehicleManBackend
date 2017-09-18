@@ -11,16 +11,19 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.annotations.GenericGenerator;
 
 @NamedQueries({
 
-		@NamedQuery(name = "Person.get_All", query = "from Person a"), @NamedQuery(name = "Person.get_Person_By_Id", query = "from Person a where a.id = :id") })
+		@NamedQuery(name = "Person.get_All", query = "from Person a"), 
+		@NamedQuery(name = "Person.get_Person_By_Id", query = "from Person a where a.id = :id") 	
+})
 
 @Entity
-@Table(name = "persons")
+@Table(name = "person")
 @XmlRootElement
 public class Person {
 
@@ -44,7 +47,8 @@ public class Person {
 
 	@Column(name = "phone", nullable = true)
 	String phone;
-
+	
+	@Transient
 	@OneToMany(mappedBy = "person")
 	List<Vehicle> assignedVehicles;
 

@@ -15,7 +15,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 @NamedQueries({
 
-		@NamedQuery(name = "Vehicle.get_All", query = "from Vehicle a"), @NamedQuery(name = "Vehicle.get_Vehicle_By_Id", query = "from Vehicle a where a.id = :id") })
+		@NamedQuery(name = "Vehicle.get_All", query = "from Vehicle a"),
+		@NamedQuery(name = "Vehicle.get_Vehicle_By_Id", query = "from Vehicle a where a.id = :id") })
 
 @Entity
 @Table(name = "vehicle")
@@ -35,27 +36,27 @@ public class Vehicle {
 	String registrationNumber;
 
 	@ManyToOne
-	@JoinColumn(name = "person_id", nullable = false)
+	@JoinColumn(name = "person_id", nullable = true)
 	Person person;
 
-	//	String brand;
-	//	String model;
-	//	String company;
-	//	Person assignedPerson;
-	//	Date dateOfLastCheck;
-	//	Date dateOfNextCheck;
-	//	Date dateOfAquirement;
-	//	Date registrationDate;
-	//	Date registrationExpirationDate;
-	//	int totalDistance;
-	//	int height;
-	//	int width;
-	//	int length;
-	//	int weight;
-	//	List<BufferedImage> pictures;
+	// String brand;
+	// String model;
+	// String company;
+	// Person assignedPerson;
+	// Date dateOfLastCheck;
+	// Date dateOfNextCheck;
+	// Date dateOfAquirement;
+	// Date registrationDate;
+	// Date registrationExpirationDate;
+	// int totalDistance;
+	// int height;
+	// int width;
+	// int length;
+	// int weight;
+	// List<BufferedImage> pictures;
 
 	public Vehicle() {
-
+		
 	}
 
 	public String getId() {
@@ -90,11 +91,11 @@ public class Vehicle {
 		this.person = person;
 	}
 
-	//	public Person getAssignedPerson() {
-	//		return assignedPerson;
-	//	}
+	// public Person getAssignedPerson() {
+	// return assignedPerson;
+	// }
 	//
-	//	public void setAssignedPerson(Person assignedPerson) {
-	//		this.assignedPerson = assignedPerson;
-	//	}
+	// public void setAssignedPerson(Person assignedPerson) {
+	// this.assignedPerson = assignedPerson;
+	// }
 }

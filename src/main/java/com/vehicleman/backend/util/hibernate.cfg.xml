@@ -19,8 +19,8 @@
    <!-- Echo all executed SQL to stdout -->
  	<property name="show_sql">true</property>
  	
-   <!-- Update database shema -->
-  	<property name="hbm2ddl.auto">update</property>
+   <!-- Update database shema , write back to update-->
+  	<property name="hbm2ddl.auto">create</property>
   	
    <!-- List of XML mapping files -->
    <mapping class="com.vehicleman.backend.entities.User"/>

@@ -31,3 +31,8 @@
     </ul>
 </body>
 </html>
+
+http://.../api/persons/id/vehicle PUT
+{
+	"id": "12315121";
+}
