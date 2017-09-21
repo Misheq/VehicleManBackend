@@ -1,45 +1,40 @@
 package com.vehicleman.backend.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
-import com.vehicleman.backend.entities.Vehicle;
 import com.vehicleman.backend.entities.Vehicle;
 import com.vehicleman.backend.util.HibernateUtil;
 
 public class VehicleDAO {
 
 	private Session session;
-	private Transaction tx;
 
 	public VehicleDAO() {
-		session = null;
-		tx = null;
+		
 	}
 
 	public List<Vehicle> getVehicles() {
-
-		List<Vehicle> vehicles;
+		session = null;
+		List<Vehicle> vehicles = new ArrayList<>();
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
-			tx = session.beginTransaction();
+			session.beginTransaction();
 
 			Query query = session.getNamedQuery("Vehicle.get_All");
-
 			vehicles = query.list();
-			tx.commit();
+			
+			session.getTransaction().commit();
 
-		} catch (RuntimeException e) {
-			try {
-				tx.rollback();
-			} catch (RuntimeException e2) {
-				e2.printStackTrace();
+		} catch (Exception e) {
+			if(session != null) {
+				session.getTransaction().rollback();
+				e.printStackTrace();
 			}
-			throw e;
 
 		} finally {
 			if (session != null) {
@@ -51,23 +46,23 @@ public class VehicleDAO {
 	}
 
 	public Vehicle getVehicle(String id) {
+		session = null;
 		Vehicle vehicle = null;
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
-			tx = session.beginTransaction();
+			session.beginTransaction();
 
 			Query query = session.getNamedQuery("Vehicle.get_Vehicle_By_Id").setParameter("id", id);
 			vehicle = (Vehicle) query.uniqueResult();
-			tx.commit();
+			
+			session.getTransaction().commit();
 
-		} catch (RuntimeException e) {
-			try {
-				tx.rollback();
-			} catch (RuntimeException e2) {
-				e2.printStackTrace();
+		} catch (Exception e) {
+			if(session != null) {
+				session.getTransaction().rollback();
+				e.printStackTrace();
 			}
-			throw e;
 
 		} finally {
 			if (session != null) {
@@ -80,22 +75,21 @@ public class VehicleDAO {
 	}
 
 	public void createVehicle(Vehicle vehicle) {
-
+		session = null;
+		
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
-			tx = session.beginTransaction();
+			session.beginTransaction();
+			
 			session.save(vehicle);
-			tx.commit();
+			
+			session.getTransaction().commit();
 
-		} catch (RuntimeException e) {
-
-			try {
-				tx.rollback();
-			} catch (RuntimeException e2) {
-				e2.printStackTrace();
+		} catch (Exception e) {
+			if(session != null) {
+				session.getTransaction().rollback();
+				e.printStackTrace();
 			}
-
-			throw e;
 
 		} finally {
 			if (session != null) {
@@ -109,7 +103,8 @@ public class VehicleDAO {
 	}
 
 	public void updateVehicle(Vehicle vehicle) {
-
+		session = null;
+		
 		// you have to set all the attributes of the given object to update!
 
 		// TODO: you must give key + attribute you want to modify everything
@@ -119,19 +114,17 @@ public class VehicleDAO {
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
-			tx = session.beginTransaction();
+			session.beginTransaction();
+			
 			session.update(vehicle);
-			tx.commit();
+			
+			session.getTransaction().commit();
 
-		} catch (RuntimeException e) {
-
-			try {
-				tx.rollback();
-			} catch (RuntimeException e2) {
-				e2.printStackTrace();
+		} catch (Exception e) {
+			if(session != null) {
+				session.getTransaction().rollback();
+				e.printStackTrace();
 			}
-
-			throw e;
 
 		} finally {
 			if (session != null) {
@@ -141,7 +134,8 @@ public class VehicleDAO {
 	}
 
 	public void deleteVehicle(String id) {
-
+		session = null;
+		
 		// TODO: create query to delete instantly. do not fetch first and then
 		// delete
 		// TODO: handle illegalArgumentException if called on not existing object id
@@ -150,21 +144,17 @@ public class VehicleDAO {
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
-			tx = session.beginTransaction();
+			session.beginTransaction();
 
 			session.delete(vehicle);
 
-			tx.commit();
+			session.getTransaction().commit();
 
-		} catch (RuntimeException e) {
-
-			try {
-				tx.rollback();
-			} catch (RuntimeException e2) {
-				e2.printStackTrace();
+		} catch (Exception e) {
+			if(session != null) {
+				session.getTransaction().rollback();
+				e.printStackTrace();
 			}
-
-			throw e;
 
 		} finally {
 			if (session != null) {

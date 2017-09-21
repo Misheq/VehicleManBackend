@@ -1,5 +1,7 @@
 package com.vehicleman.backend.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,7 +24,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "user")
 @XmlRootElement
-public class User {
+public class User implements Serializable {
 	
 	@Id
 	@GeneratedValue(generator = "uuid")

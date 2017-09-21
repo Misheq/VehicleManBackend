@@ -1,17 +1,19 @@
 package com.vehicleman.backend.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -25,7 +27,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "person")
 @XmlRootElement
-public class Person {
+public class Person implements Serializable {
 
 	@Id
 	@GeneratedValue(generator = "uuid")
@@ -48,16 +50,13 @@ public class Person {
 	@Column(name = "phone", nullable = true)
 	String phone;
 	
-	@Transient
-	@OneToMany(mappedBy = "person")
-	List<Vehicle> assignedVehicles;
+	@OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+	List<Vehicle> vehicles = new ArrayList<>();
 
 	public Person() {
 
-		// nullable fields are initialized to empty string
 		companyName = "";
 		phone = "";
-		assignedVehicles = new ArrayList<>();
 	}
 
 	public String getId() {
@@ -109,10 +108,20 @@ public class Person {
 	}
 
 	public List<Vehicle> getAssignedVehicle() {
-		return assignedVehicles;
+		return vehicles;
 	}
 
 	public void setAssignedVehicle(List<Vehicle> assignedVehicles) {
-		this.assignedVehicles = assignedVehicles;
+		this.vehicles = assignedVehicles;
 	}
+	
+	public void addVehicle(Vehicle vehicle) {
+        this.vehicles.add(vehicle);
+        vehicle.setPerson(this);
+    }
+ 
+    public void removeVehicle(Vehicle vehicle) {
+        this.vehicles.remove(vehicle);
+        vehicle.setPerson(null);
+    }
 }

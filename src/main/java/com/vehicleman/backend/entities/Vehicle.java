@@ -1,5 +1,7 @@
 package com.vehicleman.backend.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,22 +23,25 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "vehicle")
 @XmlRootElement
-public class Vehicle {
+public class Vehicle implements Serializable {
 
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@Column(name = "id", length = 45, unique = true, nullable = false)
-	String id;
+	private String id;
 
 	@Column(name = "vehicle_type", nullable = false)
-	String vehicleType;
+	private String vehicleType;
 
 	@Column(name = "reg_no", unique = true)
-	String registrationNumber;
-
+	private String registrationNumber;
+	
+//	@Column(name = "person_id", nullable = true)
+//	private String personId;
+//	
 	@ManyToOne
-	@JoinColumn(name = "person_id", nullable = true)
+	@JoinColumn(name = "person_id")
 	Person person;
 
 	// String brand;
@@ -56,7 +61,7 @@ public class Vehicle {
 	// List<BufferedImage> pictures;
 
 	public Vehicle() {
-		
+
 	}
 
 	public String getId() {
@@ -91,11 +96,40 @@ public class Vehicle {
 		this.person = person;
 	}
 
-	// public Person getAssignedPerson() {
-	// return assignedPerson;
-	// }
-	//
-	// public void setAssignedPerson(Person assignedPerson) {
-	// this.assignedPerson = assignedPerson;
-	// }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((registrationNumber == null) ? 0 : registrationNumber.hashCode());
+		result = prime * result + ((vehicleType == null) ? 0 : vehicleType.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Vehicle other = (Vehicle) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (registrationNumber == null) {
+			if (other.registrationNumber != null)
+				return false;
+		} else if (!registrationNumber.equals(other.registrationNumber))
+			return false;
+		if (vehicleType == null) {
+			if (other.vehicleType != null)
+				return false;
+		} else if (!vehicleType.equals(other.vehicleType))
+			return false;
+		return true;
+	}
 }

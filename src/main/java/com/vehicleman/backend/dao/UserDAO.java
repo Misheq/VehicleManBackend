@@ -1,10 +1,10 @@
 package com.vehicleman.backend.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import com.vehicleman.backend.entities.User;
 import com.vehicleman.backend.util.HibernateUtil;
@@ -12,33 +12,30 @@ import com.vehicleman.backend.util.HibernateUtil;
 public class UserDAO {
 
 	private Session session;
-	private Transaction tx;
 
 	public UserDAO() {
-		session = null;
-		tx = null;
+
 	}
 
 	public List<User> getUsers() {
-
-		List<User> users;
+		
+		session = null;
+		List<User> users = new ArrayList<>();
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
-			tx = session.beginTransaction();
+			session.beginTransaction();
 
 			Query query = session.getNamedQuery("User.get_All");
-
 			users = query.list();
-			tx.commit();
+			
+			session.getTransaction().commit();
 
-		} catch (RuntimeException e) {
-			try {
-				tx.rollback();
-			} catch (RuntimeException e2) {
-				e2.printStackTrace();
+		} catch (Exception e) {
+			if(session != null) {
+				session.getTransaction().rollback();
+				e.printStackTrace();
 			}
-			throw e;
 
 		} finally {
 			if (session != null) {
@@ -50,23 +47,23 @@ public class UserDAO {
 	}
 
 	public User getUser(String id) {
+		session = null;
 		User user = null;
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
-			tx = session.beginTransaction();
+			session.beginTransaction();
 
 			Query query = session.getNamedQuery("User.get_User_By_Id").setParameter("id", id);
 			user = (User) query.uniqueResult();
-			tx.commit();
+			
+			session.getTransaction().commit();
 
-		} catch (RuntimeException e) {
-			try {
-				tx.rollback();
-			} catch (RuntimeException e2) {
-				e2.printStackTrace();
+		} catch (Exception e) {
+			if(session != null) {
+				session.getTransaction().rollback();
+				e.printStackTrace();
 			}
-			throw e;
 
 		} finally {
 			if (session != null) {
@@ -79,22 +76,21 @@ public class UserDAO {
 	}
 
 	public void createUser(User user) {
-
+		session = null;
+		
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
-			tx = session.beginTransaction();
+			session.beginTransaction();
+			
 			session.save(user);
-			tx.commit();
+			
+			session.getTransaction().commit();
 
-		} catch (RuntimeException e) {
-
-			try {
-				tx.rollback();
-			} catch (RuntimeException e2) {
-				e2.printStackTrace();
+		} catch (Exception e) {
+			if(session != null) {
+				session.getTransaction().rollback();
+				e.printStackTrace();
 			}
-
-			throw e;
 
 		} finally {
 			if (session != null) {
@@ -108,7 +104,8 @@ public class UserDAO {
 	}
 
 	public void updateUser(User user) {
-
+		session = null;
+		
 		// you have to set all the attributes of the given object to update!
 
 		// TODO: you must give key + attribute you want to modify everything
@@ -118,19 +115,17 @@ public class UserDAO {
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
-			tx = session.beginTransaction();
+			session.beginTransaction();
+			
 			session.update(user);
-			tx.commit();
+			
+			session.getTransaction().commit();
 
-		} catch (RuntimeException e) {
-
-			try {
-				tx.rollback();
-			} catch (RuntimeException e2) {
-				e2.printStackTrace();
+		} catch (Exception e) {
+			if(session != null) {
+				session.getTransaction().rollback();
+				e.printStackTrace();
 			}
-
-			throw e;
 
 		} finally {
 			if (session != null) {
@@ -140,7 +135,8 @@ public class UserDAO {
 	}
 
 	public void deleteUser(String id) {
-
+		session = null;
+		
 		// TODO: create query to delete instantly. do not fetch first and then
 		// delete
 		// TODO: handle illegalArgumentException if called on not existing object id
@@ -149,21 +145,17 @@ public class UserDAO {
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
-			tx = session.beginTransaction();
+			session.beginTransaction();
 
 			session.delete(user);
 
-			tx.commit();
+			session.getTransaction().commit();
 
-		} catch (RuntimeException e) {
-
-			try {
-				tx.rollback();
-			} catch (RuntimeException e2) {
-				e2.printStackTrace();
+		} catch (Exception e) {
+			if(session != null) {
+				session.getTransaction().rollback();
+				e.printStackTrace();
 			}
-
-			throw e;
 
 		} finally {
 			if (session != null) {
