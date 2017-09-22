@@ -21,7 +21,7 @@ import org.hibernate.annotations.GenericGenerator;
 		@NamedQuery(name = "Vehicle.get_Vehicle_By_Id", query = "from Vehicle a where a.id = :id") })
 
 @Entity
-@Table(name = "vehicle")
+@Table(name = "VEHICLE")
 @XmlRootElement
 public class Vehicle implements Serializable {
 

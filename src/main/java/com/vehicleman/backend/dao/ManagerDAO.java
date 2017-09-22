@@ -6,28 +6,28 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import com.vehicleman.backend.entities.User;
+import com.vehicleman.backend.entities.Manager;
 import com.vehicleman.backend.util.HibernateUtil;
 
-public class UserDAO {
+public class ManagerDAO {
 
 	private Session session;
 
-	public UserDAO() {
+	public ManagerDAO() {
 
 	}
 
-	public List<User> getUsers() {
+	public List<Manager> getManagers() {
 		
 		session = null;
-		List<User> users = new ArrayList<>();
+		List<Manager> managers = new ArrayList<>();
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
 			session.beginTransaction();
 
-			Query query = session.getNamedQuery("User.get_All");
-			users = query.list();
+			Query query = session.getNamedQuery("Manager.get_All");
+			managers = query.list();
 			
 			session.getTransaction().commit();
 
@@ -43,19 +43,19 @@ public class UserDAO {
 			}
 		}
 
-		return users;
+		return managers;
 	}
 
-	public User getUser(String id) {
+	public Manager getManager(String id) {
 		session = null;
-		User user = null;
+		Manager manager = null;
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
 			session.beginTransaction();
 
-			Query query = session.getNamedQuery("User.get_User_By_Id").setParameter("id", id);
-			user = (User) query.uniqueResult();
+			Query query = session.getNamedQuery("Manager.get_Manager_By_Id").setParameter("id", id);
+			manager = (Manager) query.uniqueResult();
 			
 			session.getTransaction().commit();
 
@@ -71,18 +71,18 @@ public class UserDAO {
 			}
 		}
 
-		return user;
+		return manager;
 
 	}
 
-	public void createUser(User user) {
+	public void createManager(Manager manager) {
 		session = null;
 		
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
 			session.beginTransaction();
 			
-			session.save(user);
+			session.save(manager);
 			
 			session.getTransaction().commit();
 
@@ -103,7 +103,7 @@ public class UserDAO {
 		// necessary to be given explicitly)
 	}
 
-	public void updateUser(User user) {
+	public void updateManager(Manager manager) {
 		session = null;
 		
 		// you have to set all the attributes of the given object to update!
@@ -117,7 +117,7 @@ public class UserDAO {
 			session = HibernateUtil.getSessionFactory().openSession();
 			session.beginTransaction();
 			
-			session.update(user);
+			session.update(manager);
 			
 			session.getTransaction().commit();
 
@@ -134,20 +134,20 @@ public class UserDAO {
 		}
 	}
 
-	public void deleteUser(String id) {
+	public void deleteManager(String id) {
 		session = null;
 		
 		// TODO: create query to delete instantly. do not fetch first and then
 		// delete
 		// TODO: handle illegalArgumentException if called on not existing object id
 
-		User user = getUser(id);
+		Manager manager = getManager(id);
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
 			session.beginTransaction();
 
-			session.delete(user);
+			session.delete(manager);
 
 			session.getTransaction().commit();
 

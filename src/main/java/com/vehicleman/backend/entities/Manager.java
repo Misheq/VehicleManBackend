@@ -16,15 +16,15 @@ import org.hibernate.annotations.GenericGenerator;
 
 @NamedQueries({ 
 		
-		@NamedQuery(name = "User.get_All",	query = "from User a") ,
-		@NamedQuery(name = "User.get_User_By_Id",	query = "from User a where a.id = :id") 		
+		@NamedQuery(name = "Manager.get_All",	query = "from Manager m") ,
+		@NamedQuery(name = "Manager.get_Manager_By_Id",	query = "from Manager m where m.id = :id") 		
 })
 
 
 @Entity
-@Table(name = "user")
+@Table(name = "MANAGER")
 @XmlRootElement
-public class User implements Serializable {
+public class Manager implements Serializable {
 	
 	@Id
 	@GeneratedValue(generator = "uuid")
@@ -47,7 +47,7 @@ public class User implements Serializable {
 	@Column(name = "company_name", nullable = true)
 	private String companyName;
 	
-	public User() {
+	public Manager() {
 		
 		// initialize default value to nullable fields
 		phone = "";
