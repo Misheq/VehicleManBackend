@@ -7,6 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.vehicleman.backend.entities.Person;
+import com.vehicleman.backend.entities.Vehicle;
 import com.vehicleman.backend.util.HibernateUtil;
 
 public class PersonDAO {
@@ -46,7 +47,7 @@ public class PersonDAO {
 		return persons;
 	}
 
-	public Person getPerson(String id) {
+	public Person getPerson(int id) {
 		
 		Person person = null;
 		session = null;
@@ -87,7 +88,7 @@ public class PersonDAO {
 			session.save(person);
 			
 			session.getTransaction().commit();
-
+			
 		} catch (Exception e) {
 			if(session != null) {
 				session.getTransaction().rollback();
@@ -137,7 +138,7 @@ public class PersonDAO {
 		}
 	}
 
-	public void deletePerson(String id) {
+	public void deletePerson(int id) {
 
 		// TODO: create query to delete instantly. do not fetch first and then
 		// delete
@@ -165,5 +166,15 @@ public class PersonDAO {
 				session.close();
 			}
 		}
+	}
+	
+	private boolean containsPerson(Person person) {
+		List<Person> persons = getPersons();
+		for (Person p : persons) {
+			if (p.getPersonId() == person.getPersonId()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

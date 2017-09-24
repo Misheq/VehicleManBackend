@@ -5,19 +5,18 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hibernate.annotations.GenericGenerator;
-
 
 @NamedQueries({ 
 		
 		@NamedQuery(name = "Manager.get_All",	query = "from Manager m") ,
-		@NamedQuery(name = "Manager.get_Manager_By_Id",	query = "from Manager m where m.id = :id") 		
+		@NamedQuery(name = "Manager.get_Manager_By_Id",	query = "from Manager m where m.managerId = :id") 		
 })
 
 
@@ -27,10 +26,10 @@ import org.hibernate.annotations.GenericGenerator;
 public class Manager implements Serializable {
 	
 	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(name = "id", length = 45, unique = true, nullable = false)
-	private String id;
+	@GeneratedValue(strategy = GenerationType.AUTO) //(generator = "uuid")
+//	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@Column(name = "manager_id", length = 45, unique = true, nullable = false)
+	private int managerId;
 	
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
@@ -42,24 +41,21 @@ public class Manager implements Serializable {
 	private String email;
 	
 	@Column(name = "phone", nullable = true)
-	private String phone;
+	private String phone = "";
 	
 	@Column(name = "company_name", nullable = true)
-	private String companyName;
+	private String companyName = "";
 	
 	public Manager() {
 		
-		// initialize default value to nullable fields
-		phone = "";
-		companyName = "";
 	}
 
-	public String getId() {
-		return id;
+	public int getManagerId() {
+		return managerId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setManagerId(int managerId) {
+		this.managerId = managerId;
 	}
 
 	public String getFirstName() {
@@ -104,7 +100,7 @@ public class Manager implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";
+		return "Manager [id=" + managerId + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";
 	}
 	
 }

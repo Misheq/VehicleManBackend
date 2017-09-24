@@ -20,7 +20,7 @@
  	<property name="show_sql">true</property>
  	
    <!-- Update database shema , write back to update-->
-  	<property name="hbm2ddl.auto">create-drop</property>
+  	<property name="hbm2ddl.auto">update</property>
   	
    <!-- List of XML mapping files -->
    <mapping class="com.vehicleman.backend.entities.Manager"/>

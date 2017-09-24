@@ -13,58 +13,94 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vehicleman.backend.dao.PersonDAO;
 import com.vehicleman.backend.dao.VehicleDAO;
+import com.vehicleman.backend.entities.Person;
+import com.vehicleman.backend.entities.PersonVehicleMapper;
 import com.vehicleman.backend.entities.Vehicle;
 
 @Path("vehicles")
 public class VehicleService {
-	
+
 	VehicleDAO vehicleDao = new VehicleDAO();
-	
+	PersonDAO personDao = new PersonDAO();
+
 	@GET
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public List<Vehicle> getVehicles() {
-		
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public String getVehicles() {
+
 		List<Vehicle> vehicles = vehicleDao.getVehicles();
-		
-		return vehicles;
+
+		ObjectMapper om = new ObjectMapper();
+
+		try {
+			return om.writeValueAsString(vehicles);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
 	}
-	
+
 	@GET
 	@Path("/{id}")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Vehicle getVehicle(@PathParam("id") String id) {
-		
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Vehicle getVehicle(@PathParam("id") int id) {
+
 		return vehicleDao.getVehicle(id);
 	}
-	
-	@POST	
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Vehicle createVehicle(Vehicle vehicle) {
-		
-		vehicleDao.createVehicle(vehicle);
-		
-		// return response code and message and maybe created entity
-		return vehicle;
+
+	@POST
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Response createVehicleForPerson(PersonVehicleMapper pvm) {
+
+		if (!containsPerson(pvm.getPerson())) {
+			personDao.createPerson(pvm.getPerson());
+			createMissingEntityAndMapWithExisting(pvm);
+		}
+
+		return Response.ok().build();
 	}
-	
-	@PUT	
+
+	@PUT
 	@Path("/{id}")
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Vehicle updateVehicle(@PathParam("id") String id, Vehicle vehicle) {
-		
-		vehicle.setId(id);
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Vehicle updateVehicle(@PathParam("id") int id, Vehicle vehicle) {
+
+		vehicle.setVehicleId(id);
 		vehicleDao.updateVehicle(vehicle);
-		
+
 		return vehicle;
 	}
-	
+
 	@DELETE
 	@Path("/{id}")
-	public Response deleteVehicle(@PathParam("id") String id) {
+	public Response deleteVehicle(@PathParam("id") int id) {
 
-		vehicleDao.deleteVehicle(id);			
-		
+		vehicleDao.deleteVehicle(id);
+
 		return Response.noContent().build();
 	}
+	
+	// HELPERS
+	
+	private void createMissingEntityAndMapWithExisting(PersonVehicleMapper pvm) {
+		for (Vehicle v : pvm.getVehicles()) {
+			v.setPerson(pvm.getPerson());
+			vehicleDao.updateVehicle(v);
+		}
+	}
+
+	private boolean containsPerson(Person person) {
+		List<Person> persons = personDao.getPersons();
+		for (Person p : persons) {
+			if (p.getPersonId() == person.getPersonId()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

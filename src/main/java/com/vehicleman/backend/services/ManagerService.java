@@ -33,7 +33,7 @@ public class ManagerService {
 	@GET
 	@Path("/{id}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Manager getManager(@PathParam("id") String id) {
+	public Manager getManager(@PathParam("id") int id) {
 		
 		return managerDao.getManager(id);
 	}
@@ -51,9 +51,9 @@ public class ManagerService {
 	@PUT	
 	@Path("/{id}")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Manager updateManager(@PathParam("id") String id, Manager manager) {
+	public Manager updateManager(@PathParam("id") int id, Manager manager) {
 		
-		manager.setId(id);
+		manager.setManagerId(id);
 		managerDao.updateManager(manager);
 		
 		return manager;
@@ -61,7 +61,7 @@ public class ManagerService {
 	
 	@DELETE
 	@Path("/{id}")
-	public Response deleteManager(@PathParam("id") String id) {
+	public Response deleteManager(@PathParam("id") int id) {
 
 		managerDao.deleteManager(id);			
 		

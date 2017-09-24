@@ -46,7 +46,7 @@ public class ManagerDAO {
 		return managers;
 	}
 
-	public Manager getManager(String id) {
+	public Manager getManager(int id) {
 		session = null;
 		Manager manager = null;
 
@@ -134,7 +134,7 @@ public class ManagerDAO {
 		}
 	}
 
-	public void deleteManager(String id) {
+	public void deleteManager(int id) {
 		session = null;
 		
 		// TODO: create query to delete instantly. do not fetch first and then

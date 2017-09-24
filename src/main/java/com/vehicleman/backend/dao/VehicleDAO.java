@@ -45,7 +45,7 @@ public class VehicleDAO {
 		return vehicles;
 	}
 
-	public Vehicle getVehicle(String id) {
+	public Vehicle getVehicle(int id) {
 		session = null;
 		Vehicle vehicle = null;
 
@@ -133,7 +133,7 @@ public class VehicleDAO {
 		}
 	}
 
-	public void deleteVehicle(String id) {
+	public void deleteVehicle(int id) {
 		session = null;
 		
 		// TODO: create query to delete instantly. do not fetch first and then
