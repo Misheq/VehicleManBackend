@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -18,53 +19,75 @@ import com.vehicleman.backend.entities.Manager;
 
 @Path("managers")
 public class ManagerService {
-	
+
 	ManagerDAO managerDao = new ManagerDAO();
-	
+
 	@GET
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public List<Manager> getManagers() {
-		
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Response getManagers() {
+
 		List<Manager> managers = managerDao.getManagers();
-		
-		return managers;
+
+		return Response.ok(managers).build();
 	}
-	
+
 	@GET
 	@Path("/{id}")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Manager getManager(@PathParam("id") int id) {
-		
-		return managerDao.getManager(id);
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Response getManager(@PathParam("id") int id) {
+
+		Manager mgr = managerDao.getManager(id);
+
+		if(mgr == null) {
+			throw new NotFoundException();
+		}
+
+		return Response.ok(mgr).build();
 	}
-	
-	@POST	
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Manager createManager(Manager manager) {
-		
+
+	@POST
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Response createManager(Manager manager) {
+
 		managerDao.createManager(manager);
-		
-		// return response code and message and maybe created entity
-		return manager;
+
+		return Response.status(201).entity("Manager has been created successfully").build();
 	}
-	
-	@PUT	
+
+	@PUT
 	@Path("/{id}")
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Manager updateManager(@PathParam("id") int id, Manager manager) {
-		
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Response updateManager(@PathParam("id") int id, Manager manager) {
+
+		// checks if manager with id exists
+		Manager mgr = managerDao.getManager(id);
+
+		if(mgr == null) {
+			throw new NotFoundException();
+		}
+
+		// TODO: check if required fields are given
+		// TODO: check if valid fields are given
+		// TODO: handle to update only fields that are updated
 		manager.setManagerId(id);
 		managerDao.updateManager(manager);
-		
-		return manager;
+
+		return Response.ok().entity("Manager with id: " + id + " has been updated successfully").build();
 	}
-	
+
 	@DELETE
 	@Path("/{id}")
 	public Response deleteManager(@PathParam("id") int id) {
 
-		managerDao.deleteManager(id);			
-		
-		return Response.noContent().build();
+		// checks if manager with id exists
+		Manager mgr = managerDao.getManager(id);
+
+		if(mgr == null) {
+			throw new NotFoundException();
+		}
+
+		managerDao.deleteManager(id);
+
+		return Response.noContent().entity("Manager with id: " + id + "deleted successfully").build();
 	}
 }

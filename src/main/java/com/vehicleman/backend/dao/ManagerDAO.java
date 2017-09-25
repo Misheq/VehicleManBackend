@@ -18,7 +18,7 @@ public class ManagerDAO {
 	}
 
 	public List<Manager> getManagers() {
-		
+
 		session = null;
 		List<Manager> managers = new ArrayList<>();
 
@@ -28,17 +28,17 @@ public class ManagerDAO {
 
 			Query query = session.getNamedQuery("Manager.get_All");
 			managers = query.list();
-			
+
 			session.getTransaction().commit();
 
-		} catch (Exception e) {
+		} catch(Exception e) {
 			if(session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
 
 		} finally {
-			if (session != null) {
+			if(session != null) {
 				session.close();
 			}
 		}
@@ -56,17 +56,17 @@ public class ManagerDAO {
 
 			Query query = session.getNamedQuery("Manager.get_Manager_By_Id").setParameter("id", id);
 			manager = (Manager) query.uniqueResult();
-			
+
 			session.getTransaction().commit();
 
-		} catch (Exception e) {
+		} catch(Exception e) {
 			if(session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
 
 		} finally {
-			if (session != null) {
+			if(session != null) {
 				session.close();
 			}
 		}
@@ -77,23 +77,23 @@ public class ManagerDAO {
 
 	public void createManager(Manager manager) {
 		session = null;
-		
+
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
 			session.beginTransaction();
-			
+
 			session.save(manager);
-			
+
 			session.getTransaction().commit();
 
-		} catch (Exception e) {
+		} catch(Exception e) {
 			if(session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
 
 		} finally {
-			if (session != null) {
+			if(session != null) {
 				session.close();
 			}
 		}
@@ -105,30 +105,25 @@ public class ManagerDAO {
 
 	public void updateManager(Manager manager) {
 		session = null;
-		
-		// you have to set all the attributes of the given object to update!
 
-		// TODO: you must give key + attribute you want to modify everything
-		// else should remain the same
-		// TODO: handle bad request - if id is missing or non existent
-		// maybe update only on path /id
+		// you have to set all the attributes of the given object to update! - handle maybe on frontend
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
 			session.beginTransaction();
-			
+
 			session.update(manager);
-			
+
 			session.getTransaction().commit();
 
-		} catch (Exception e) {
+		} catch(Exception e) {
 			if(session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
 
 		} finally {
-			if (session != null) {
+			if(session != null) {
 				session.close();
 			}
 		}
@@ -136,10 +131,9 @@ public class ManagerDAO {
 
 	public void deleteManager(int id) {
 		session = null;
-		
+
 		// TODO: create query to delete instantly. do not fetch first and then
 		// delete
-		// TODO: handle illegalArgumentException if called on not existing object id
 
 		Manager manager = getManager(id);
 
@@ -151,14 +145,14 @@ public class ManagerDAO {
 
 			session.getTransaction().commit();
 
-		} catch (Exception e) {
+		} catch(Exception e) {
 			if(session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
 
 		} finally {
-			if (session != null) {
+			if(session != null) {
 				session.close();
 			}
 		}
