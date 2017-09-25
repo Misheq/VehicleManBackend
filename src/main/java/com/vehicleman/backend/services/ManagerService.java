@@ -28,7 +28,7 @@ public class ManagerService {
 
 		List<Manager> managers = managerDao.getManagers();
 
-		return Response.ok(managers).build();
+		return Response.ok(managers.toArray(new Manager[managers.size()])).build();
 	}
 
 	@GET
@@ -39,7 +39,7 @@ public class ManagerService {
 		Manager mgr = managerDao.getManager(id);
 
 		if(mgr == null) {
-			throw new NotFoundException();
+			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found}").build());
 		}
 
 		return Response.ok(mgr).build();
@@ -51,7 +51,8 @@ public class ManagerService {
 
 		managerDao.createManager(manager);
 
-		return Response.status(201).entity("Manager has been created successfully").build();
+		// TODO: ensure the message is in json - this is not working!
+		return Response.status(201).entity("{\"message\": Manager has been created successfully}").build();
 	}
 
 	@PUT
@@ -63,7 +64,7 @@ public class ManagerService {
 		Manager mgr = managerDao.getManager(id);
 
 		if(mgr == null) {
-			throw new NotFoundException();
+			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found}").build());
 		}
 
 		// TODO: check if required fields are given
@@ -83,7 +84,7 @@ public class ManagerService {
 		Manager mgr = managerDao.getManager(id);
 
 		if(mgr == null) {
-			throw new NotFoundException();
+			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found}").build());
 		}
 
 		managerDao.deleteManager(id);

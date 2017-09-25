@@ -37,7 +37,6 @@ public class PersonService {
 		ObjectMapper om = new ObjectMapper();
 
 		try {
-			// Needs testing and check if object mapper is necessary
 			return Response.ok().entity(om.writeValueAsString(persons)).build();
 		} catch(JsonProcessingException e) {
 			e.printStackTrace();
@@ -53,7 +52,7 @@ public class PersonService {
 		Person pers = personDao.getPerson(id);
 
 		if(pers == null) {
-			throw new NotFoundException();
+			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
 		}
 
 		return Response.ok().entity(pers).build();
@@ -61,19 +60,38 @@ public class PersonService {
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Response createPersonForVehicle(PersonVehicleMapper pvm) {
+	public Response createPerson(PersonVehicleMapper pvm) {
 
-		// must contain vehicle without id
-		Vehicle v = pvm.getVehicles().get(0);
-		if(containsPerson(pvm.getPerson())) {
-			v.setPerson(pvm.getPerson());
-		} else {
-			v.setPerson(null);
+		// create person with car -> must add person w/o id and car list (can add many existing cars) w ids
+		// create person w/o  car -> must contain person w/o id, car-list can be empty
+		if(pvm.getPerson() == null) {
+			// for backend validation - on front end should technically not be able to do so
+			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Person not found\"}").build());
 		}
 
-		vehicleDao.createVehicle(v);
+		// TODO: validate if not nullable fields are given
+		personDao.createPerson(pvm.getPerson());
+		// if list is empty does not add anything if list contains cars it will map it together -> on front end cannot be given falsly
 
-		return Response.ok().entity("Person created successfully").build();
+		// if existing car added -> creates person + assigns him at vehicle table on db level, but error while
+		// writing it out serializa
+		/**
+		 *
+		 * at com.fasterxml.jackson.databind.ser.BeanSerializer.serialize(
+		 * BeanSerializer.java:155) at
+		 * com.fasterxml.jackson.databind.ser.std.CollectionSerializer.
+		 * serializeContents(CollectionSerializer.java:149) at
+		 * com.fasterxml.jackson.databind.ser.std.CollectionSerializer.serialize
+		 * (CollectionSerializer.java:112) at
+		 * com.fasterxml.jackson.databind.ser.std.CollectionSerializer.serialize
+		 * (CollectionSerializer.java:25)
+		 *
+		 *
+		 */
+
+		createMissingEntityAndMapWithExisting(pvm);
+
+		return Response.ok().entity("{\"message\":\"Person created successfully\"}").build();
 	}
 
 	@PUT
@@ -83,13 +101,13 @@ public class PersonService {
 
 		Person per = personDao.getPerson(id);
 		if(per == null) {
-			throw new NotFoundException();
+			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
 		}
 
 		person.setPersonId(id);
 		personDao.updatePerson(person);
 
-		return Response.ok().entity("Person with id: " + id + " updated successfully").build();
+		return Response.ok().entity("{\"message\":\"Person with id: " + id + " updated successfully\"}").build();
 	}
 
 	@DELETE
@@ -98,12 +116,12 @@ public class PersonService {
 
 		Person pers = personDao.getPerson(id);
 		if(pers == null) {
-			throw new NotFoundException();
+			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
 		}
 
 		personDao.deletePerson(id);
 
-		return Response.noContent().entity("Person with id: " + id + " deleted successfully").build();
+		return Response.noContent().entity("{\"message\":\"Person with id: " + id + " deleted successfully\"}").build();
 	}
 
 	// HELPERS
@@ -116,5 +134,12 @@ public class PersonService {
 			}
 		}
 		return false;
+	}
+
+	private void createMissingEntityAndMapWithExisting(PersonVehicleMapper pvm) {
+		for(Vehicle v : pvm.getVehicles()) {
+			v.setPerson(pvm.getPerson());
+			vehicleDao.updateVehicle(v);
+		}
 	}
 }
