@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -29,65 +30,79 @@ public class VehicleService {
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public String getVehicles() {
+	public Response getVehicles() {
 
 		List<Vehicle> vehicles = vehicleDao.getVehicles();
 
 		ObjectMapper om = new ObjectMapper();
 
 		try {
-			return om.writeValueAsString(vehicles);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
+			return Response.ok().entity(om.writeValueAsString(vehicles)).build();
+		} catch(JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		return "";
+		return Response.ok().build();
 	}
 
 	@GET
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Vehicle getVehicle(@PathParam("id") int id) {
+	public Response getVehicle(@PathParam("id") int id) {
 
-		return vehicleDao.getVehicle(id);
+		Vehicle veh = vehicleDao.getVehicle(id);
+		if(veh == null) {
+			throw new NotFoundException();
+		}
+
+		return Response.ok().entity(veh).build();
 	}
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response createVehicleForPerson(PersonVehicleMapper pvm) {
 
-		if (!containsPerson(pvm.getPerson())) {
+		if(!containsPerson(pvm.getPerson())) {
 			personDao.createPerson(pvm.getPerson());
 			createMissingEntityAndMapWithExisting(pvm);
 		}
 
-		return Response.ok().build();
+		return Response.ok().entity("Vehicle successfully created").build();
 	}
 
 	@PUT
 	@Path("/{id}")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Vehicle updateVehicle(@PathParam("id") int id, Vehicle vehicle) {
+	public Response updateVehicle(@PathParam("id") int id, Vehicle vehicle) {
+
+		Vehicle veh = vehicleDao.getVehicle(id);
+		if(veh == null) {
+			throw new NotFoundException();
+		}
 
 		vehicle.setVehicleId(id);
 		vehicleDao.updateVehicle(vehicle);
 
-		return vehicle;
+		return Response.ok().entity("Vehicle with id: " + id + " updated successfully").build();
 	}
 
 	@DELETE
 	@Path("/{id}")
 	public Response deleteVehicle(@PathParam("id") int id) {
 
+		Vehicle veh = vehicleDao.getVehicle(id);
+		if(veh == null) {
+			throw new NotFoundException();
+		}
+
 		vehicleDao.deleteVehicle(id);
 
-		return Response.noContent().build();
+		return Response.noContent().entity("Vehicle with id: " + id + " deleted successfully").build();
 	}
-	
+
 	// HELPERS
-	
+
 	private void createMissingEntityAndMapWithExisting(PersonVehicleMapper pvm) {
-		for (Vehicle v : pvm.getVehicles()) {
+		for(Vehicle v : pvm.getVehicles()) {
 			v.setPerson(pvm.getPerson());
 			vehicleDao.updateVehicle(v);
 		}
@@ -95,8 +110,8 @@ public class VehicleService {
 
 	private boolean containsPerson(Person person) {
 		List<Person> persons = personDao.getPersons();
-		for (Person p : persons) {
-			if (p.getPersonId() == person.getPersonId()) {
+		for(Person p : persons) {
+			if(p.getPersonId() == person.getPersonId()) {
 				return true;
 			}
 		}
