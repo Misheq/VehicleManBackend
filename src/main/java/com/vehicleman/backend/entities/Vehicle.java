@@ -41,6 +41,9 @@ public class Vehicle implements Serializable {
 	@Column(name = "reg_no", unique = true)
 	private String registrationNumber;
 
+	//	@Transient
+	//	private String assignedPerson;
+
 	@ManyToOne(targetEntity = Person.class, cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	@JsonBackReference
 	@JoinColumn(name = "person_id")

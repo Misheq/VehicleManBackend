@@ -49,13 +49,21 @@ public class PersonService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getPerson(@PathParam("id") int id) {
 
-		Person pers = personDao.getPerson(id);
+		Person person = personDao.getPerson(id);
 
-		if(pers == null) {
+		if(person == null) {
 			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
 		}
 
-		return Response.ok().entity(pers).build();
+		ObjectMapper om = new ObjectMapper();
+
+		try {
+			return Response.ok().entity(om.writeValueAsString(person)).build();
+		} catch(JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+		return Response.ok().entity(person).build();
 	}
 
 	@POST
@@ -72,22 +80,6 @@ public class PersonService {
 		// TODO: validate if not nullable fields are given
 		personDao.createPerson(pvm.getPerson());
 		// if list is empty does not add anything if list contains cars it will map it together -> on front end cannot be given falsly
-
-		// if existing car added -> creates person + assigns him at vehicle table on db level, but error while
-		// writing it out serializa
-		/**
-		 *
-		 * at com.fasterxml.jackson.databind.ser.BeanSerializer.serialize(
-		 * BeanSerializer.java:155) at
-		 * com.fasterxml.jackson.databind.ser.std.CollectionSerializer.
-		 * serializeContents(CollectionSerializer.java:149) at
-		 * com.fasterxml.jackson.databind.ser.std.CollectionSerializer.serialize
-		 * (CollectionSerializer.java:112) at
-		 * com.fasterxml.jackson.databind.ser.std.CollectionSerializer.serialize
-		 * (CollectionSerializer.java:25)
-		 *
-		 *
-		 */
 
 		createMissingEntityAndMapWithExisting(pvm);
 
@@ -125,16 +117,6 @@ public class PersonService {
 	}
 
 	// HELPERS
-
-	private boolean containsPerson(Person person) {
-		List<Person> persons = personDao.getPersons();
-		for(Person p : persons) {
-			if(p.getPersonId() == person.getPersonId()) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	private void createMissingEntityAndMapWithExisting(PersonVehicleMapper pvm) {
 		for(Vehicle v : pvm.getVehicles()) {
