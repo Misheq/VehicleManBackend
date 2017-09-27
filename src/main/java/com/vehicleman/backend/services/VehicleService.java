@@ -85,6 +85,11 @@ public class VehicleService {
 		 *
 		 **/
 
+		if(pvm.getVehicles() == null) {
+			// for backend validation - on front end should technically not be able to do so
+			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Vehicle list empty\"}").build());
+		}
+
 		// must contain vehicle without id
 		// TODO: validate not nullable fields are given
 		// create vehicle w/o id and person, empty person object
