@@ -1,6 +1,6 @@
-TODO:
-
+-------------------------------------------------------------
 Documentation part:
+-------------------------------------------------------------
 both - create git repository to track progress
 
 backend - download eclipse
@@ -20,8 +20,11 @@ frontnd - download android studio
 Done: 
 backend - configure swagger
 frontnd - create mockup
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+-------------------------------------------------------------
 Program part:
+-------------------------------------------------------------
 backend - download eclipse
 		- install eclipse
 		- configure project
@@ -53,6 +56,3 @@ backend - download eclipse
 
 frontnd - download android studio
 		- install android studio
-		
-		
-				
