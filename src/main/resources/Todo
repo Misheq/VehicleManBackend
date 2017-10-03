@@ -4,7 +4,9 @@ Documentation part:
 both - create git repository to track progress
 
 backend - download eclipse
-		- install eclipse
+		- install eclipseű
+		- download java jdk
+		- install java jdk
 		- configure project
         - configure hibernate
         - configure Jersey
@@ -19,6 +21,7 @@ frontnd - download android studio
 		- create mockup
 Done: 
 backend - configure swagger
+		- download eclipse
 frontnd - create mockup
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
