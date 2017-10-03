@@ -1,0 +1,58 @@
+TODO:
+
+Documentation part:
+both - create git repository to track progress
+
+backend - download eclipse
+		- install eclipse
+		- configure project
+        - configure hibernate
+        - configure Jersey
+        - configure swagger
+        - download postman
+        - install postman
+
+frontnd - download android studio
+		- install android studio
+		- create project
+		- configure dependencies
+		- create mockup
+Done: 
+backend - configure swagger
+frontnd - create mockup
+
+Program part:
+backend - download eclipse
+		- install eclipse
+		- configure project
+		- configure hibernate
+		- configure jersey
+		- configure swagger
+		- configure database for local testing
+		- configure tomcat for local testing
+		- write program
+		- write tests
+		- add javadoc
+		
+frontnd - download android studio
+		- install android studio
+		- create project
+		- configure dependecies
+		- create ui
+		- connect front end with backend
+		
+Done:
+backend - download eclipse
+		- install eclipse
+		- configure project
+		- configure hibernate
+		- configure jersey
+		- configure swagger
+		- configure database for local testing
+		- configure tomcat for local testing
+
+frontnd - download android studio
+		- install android studio
+		
+		
+				
