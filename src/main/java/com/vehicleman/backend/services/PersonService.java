@@ -22,7 +22,10 @@ import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.PersonVehicleMapper;
 import com.vehicleman.backend.entities.Vehicle;
 
+import io.swagger.annotations.Api;
+
 @Path("persons")
+@Api(value = "Persons")
 public class PersonService {
 
 	PersonDAO personDao = new PersonDAO();
@@ -30,6 +33,7 @@ public class PersonService {
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	//	@ApiOperation(value = "Get all persons", notes = "get all persons from the database", response = Person.class, responseContainer = "List")
 	public Response getPersons() {
 
 		List<Person> persons = personDao.getPersons();
@@ -38,7 +42,7 @@ public class PersonService {
 
 		try {
 			return Response.ok().entity(om.writeValueAsString(persons)).build();
-		} catch(JsonProcessingException e) {
+		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 		return Response.ok().build();
@@ -51,15 +55,16 @@ public class PersonService {
 
 		Person person = personDao.getPerson(id);
 
-		if(person == null) {
-			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
+		if (person == null) {
+			throw new NotFoundException(
+					Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
 		}
 
 		ObjectMapper om = new ObjectMapper();
 
 		try {
 			return Response.ok().entity(om.writeValueAsString(person)).build();
-		} catch(JsonProcessingException e) {
+		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 
@@ -72,7 +77,7 @@ public class PersonService {
 
 		// create person with car -> must add person w/o id and car list (can add many existing cars) w ids
 		// create person w/o  car -> must contain person w/o id, car-list can be empty
-		if(pvm.getPerson() == null) {
+		if (pvm.getPerson() == null) {
 			// for backend validation - on front end should technically not be able to do so
 			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Person not found\"}").build());
 		}
@@ -92,8 +97,9 @@ public class PersonService {
 	public Response updatePerson(@PathParam("id") int id, Person person) {
 
 		Person per = personDao.getPerson(id);
-		if(per == null) {
-			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
+		if (per == null) {
+			throw new NotFoundException(
+					Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
 		}
 
 		person.setPersonId(id);
@@ -106,11 +112,17 @@ public class PersonService {
 	@Path("/{id}")
 	public Response deletePerson(@PathParam("id") int id) {
 
-		Person pers = personDao.getPerson(id);
-		if(pers == null) {
-			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
+		Person person = personDao.getPerson(id);
+		if (person == null) {
+			throw new NotFoundException(
+					Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
 		}
 
+		// workaround ----------------------
+		detachCarsFromOwner(person);
+
+		// ---------------------------------
+		// delete after vehicles removed from list
 		personDao.deletePerson(id);
 
 		return Response.noContent().entity("{\"message\":\"Person with id: " + id + " deleted successfully\"}").build();
@@ -119,8 +131,15 @@ public class PersonService {
 	// HELPERS
 
 	private void createMissingEntityAndMapWithExisting(PersonVehicleMapper pvm) {
-		for(Vehicle v : pvm.getVehicles()) {
+		for (Vehicle v : pvm.getVehicles()) {
 			v.setPerson(pvm.getPerson());
+			vehicleDao.updateVehicle(v);
+		}
+	}
+
+	private void detachCarsFromOwner(Person person) {
+		for (Vehicle v : person.getVehicles()) {
+			v.setPerson(null);
 			vehicleDao.updateVehicle(v);
 		}
 	}

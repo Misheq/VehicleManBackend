@@ -17,7 +17,10 @@ import javax.ws.rs.core.Response;
 import com.vehicleman.backend.dao.ManagerDAO;
 import com.vehicleman.backend.entities.Manager;
 
+import io.swagger.annotations.Api;
+
 @Path("managers")
+@Api(value = "Vehicles")
 public class ManagerService {
 
 	ManagerDAO managerDao = new ManagerDAO();
@@ -38,8 +41,9 @@ public class ManagerService {
 
 		Manager mgr = managerDao.getManager(id);
 
-		if(mgr == null) {
-			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found}").build());
+		if (mgr == null) {
+			throw new NotFoundException(
+					Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found\"}").build());
 		}
 
 		return Response.ok(mgr).build();
@@ -52,7 +56,7 @@ public class ManagerService {
 		managerDao.createManager(manager);
 
 		// TODO: ensure the message is in json - this is not working!
-		return Response.status(201).entity("{\"message\": Manager has been created successfully}").build();
+		return Response.status(201).entity("{\"message\": Manager has been created successfully\"}").build();
 	}
 
 	@PUT
@@ -63,8 +67,9 @@ public class ManagerService {
 		// checks if manager with id exists
 		Manager mgr = managerDao.getManager(id);
 
-		if(mgr == null) {
-			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found}").build());
+		if (mgr == null) {
+			throw new NotFoundException(
+					Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found\"}").build());
 		}
 
 		// TODO: check if required fields are given
@@ -73,7 +78,8 @@ public class ManagerService {
 		manager.setManagerId(id);
 		managerDao.updateManager(manager);
 
-		return Response.ok().entity("Manager with id: " + id + " has been updated successfully").build();
+		return Response.ok().entity("{\"message\":\"Manager with id: " + id + " has been updated successfully\"}")
+				.build();
 	}
 
 	@DELETE
@@ -83,12 +89,14 @@ public class ManagerService {
 		// checks if manager with id exists
 		Manager mgr = managerDao.getManager(id);
 
-		if(mgr == null) {
-			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found}").build());
+		if (mgr == null) {
+			throw new NotFoundException(
+					Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found\"}").build());
 		}
 
 		managerDao.deleteManager(id);
 
-		return Response.noContent().entity("Manager with id: " + id + "deleted successfully").build();
+		return Response.noContent().entity("{\"message\":\"Manager with id: " + id + " deleted successfully\"}")
+				.build();
 	}
 }

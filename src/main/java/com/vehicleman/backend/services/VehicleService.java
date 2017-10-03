@@ -22,7 +22,10 @@ import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.PersonVehicleMapper;
 import com.vehicleman.backend.entities.Vehicle;
 
+import io.swagger.annotations.Api;
+
 @Path("vehicles")
+@Api(value = "Vehicles")
 public class VehicleService {
 
 	VehicleDAO vehicleDao = new VehicleDAO();
@@ -43,7 +46,7 @@ public class VehicleService {
 
 		try {
 			return Response.ok().entity(om.writeValueAsString(vehicles)).build();
-		} catch(JsonProcessingException e) {
+		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 		return Response.ok().build();
@@ -55,8 +58,9 @@ public class VehicleService {
 	public Response getVehicle(@PathParam("id") int id) {
 
 		Vehicle vehicle = vehicleDao.getVehicle(id);
-		if(vehicle == null) {
-			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Vehicle with id: " + id + " not found\"}").build());
+		if (vehicle == null) {
+			throw new NotFoundException(
+					Response.status(404).entity("{\"error\":\"Vehicle with id: " + id + " not found\"}").build());
 		}
 
 		//		// sets transient property assignedPerson
@@ -66,7 +70,7 @@ public class VehicleService {
 
 		try {
 			return Response.ok().entity(om.writeValueAsString(vehicle)).build();
-		} catch(JsonProcessingException e) {
+		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 
@@ -79,13 +83,12 @@ public class VehicleService {
 
 		// RETHINK - pvm is waiting a person object and List<Vehicle> vehicles list
 		/**
-		 * example: { "person": { "personId": "2", "firstName": "Adam",
-		 * "lastName": "Nagy", "email": "some@test.com" }, "vehicles": [ {
-		 * "vehicleType": "car", "registrationNumber": "test-plate" } ] }
+		 * example: { "person": { "personId": "2", "firstName": "Adam", "lastName": "Nagy", "email": "some@test.com" },
+		 * "vehicles": [ { "vehicleType": "car", "registrationNumber": "test-plate" } ] }
 		 *
 		 **/
 
-		if(pvm.getVehicles() == null) {
+		if (pvm.getVehicles() == null) {
 			// for backend validation - on front end should technically not be able to do so
 			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Vehicle list empty\"}").build());
 		}
@@ -95,7 +98,7 @@ public class VehicleService {
 		// create vehicle w/o id and person, empty person object
 		// create vehicle w/o id with person, Person id must be given
 		Vehicle vehicle = pvm.getVehicles().get(0);
-		if(containsPerson(pvm.getPerson())) {
+		if (containsPerson(pvm.getPerson())) {
 			Person person = pvm.getPerson();
 			vehicle.setPerson(person);
 		} else {
@@ -115,8 +118,9 @@ public class VehicleService {
 	public Response updateVehicle(@PathParam("id") int id, Vehicle vehicle) {
 
 		Vehicle veh = vehicleDao.getVehicle(id);
-		if(veh == null) {
-			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Vehicle with id: " + id + " not found\"}").build());
+		if (veh == null) {
+			throw new NotFoundException(
+					Response.status(404).entity("{\"error\":\"Vehicle with id: " + id + " not found\"}").build());
 		}
 
 		vehicle.setVehicleId(id);
@@ -130,22 +134,24 @@ public class VehicleService {
 	public Response deleteVehicle(@PathParam("id") int id) {
 
 		Vehicle veh = vehicleDao.getVehicle(id);
-		if(veh == null) {
-			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Vehicle with id: " + id + " not found\"}").build());
+		if (veh == null) {
+			throw new NotFoundException(
+					Response.status(404).entity("{\"error\":\"Vehicle with id: " + id + " not found\"}").build());
 		}
 
 		vehicleDao.deleteVehicle(id);
 
 		// does not print out response :/
-		return Response.status(204).entity("{\"message\":\"Vehicle with id: " + id + " deleted successfully\"}").build();
+		return Response.status(204).entity("{\"message\":\"Vehicle with id: " + id + " deleted successfully\"}")
+				.build();
 	}
 
 	// HELPERS
 
 	private boolean containsPerson(Person person) {
 		List<Person> persons = personDao.getPersons();
-		for(Person p : persons) {
-			if(p.getPersonId() == person.getPersonId()) {
+		for (Person p : persons) {
+			if (p.getPersonId() == person.getPersonId()) {
 				return true;
 			}
 		}
