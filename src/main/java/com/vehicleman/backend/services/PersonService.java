@@ -2,6 +2,7 @@ package com.vehicleman.backend.services;
 
 import java.util.List;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,8 +29,18 @@ import io.swagger.annotations.Api;
 @Api(value = "Persons")
 public class PersonService {
 
-	PersonDAO personDao = new PersonDAO();
-	VehicleDAO vehicleDao = new VehicleDAO();
+	PersonDAO personDao;
+	VehicleDAO vehicleDao;
+
+	public PersonService() {
+		this.personDao = new PersonDAO();
+		this.vehicleDao = new VehicleDAO();
+	}
+
+	public PersonService(PersonDAO personDao, VehicleDAO vehicleDao) {
+		this.personDao = personDao;
+		this.vehicleDao = vehicleDao;
+	}
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -56,8 +67,8 @@ public class PersonService {
 		Person person = personDao.getPerson(id);
 
 		if (person == null) {
-			throw new NotFoundException(
-					Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
+			throw new BadRequestException(
+					Response.status(400).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
 		}
 
 		ObjectMapper om = new ObjectMapper();
@@ -88,7 +99,7 @@ public class PersonService {
 
 		createMissingEntityAndMapWithExisting(pvm);
 
-		return Response.ok().entity("{\"message\":\"Person created successfully\"}").build();
+		return Response.status(201).entity("{\"message\":\"Person created successfully\"}").build();
 	}
 
 	@PUT
