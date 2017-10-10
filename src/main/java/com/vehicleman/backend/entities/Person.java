@@ -1,6 +1,7 @@
 package com.vehicleman.backend.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -56,7 +57,7 @@ public class Person implements Serializable {
 	private List<Vehicle> vehicles;
 
 	public Person() {
-
+		vehicles = new ArrayList<Vehicle>();
 	}
 
 	public int getPersonId() {

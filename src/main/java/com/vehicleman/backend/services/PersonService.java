@@ -29,17 +29,12 @@ import io.swagger.annotations.Api;
 @Api(value = "Persons")
 public class PersonService {
 
-	PersonDAO personDao;
-	VehicleDAO vehicleDao;
+	protected PersonDAO personDao;
+	protected VehicleDAO vehicleDao;
 
 	public PersonService() {
 		this.personDao = new PersonDAO();
 		this.vehicleDao = new VehicleDAO();
-	}
-
-	public PersonService(PersonDAO personDao, VehicleDAO vehicleDao) {
-		this.personDao = personDao;
-		this.vehicleDao = vehicleDao;
 	}
 
 	@GET

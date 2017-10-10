@@ -3,11 +3,10 @@ package com.vehicleman.test.person.tests;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
@@ -22,15 +21,14 @@ public class PersonDeleteTests extends PersonTestBase {
 	@Test
 	public void deletePersonServiceWithoutVehicles() {
 		int id = 1;
-		person.setVehicles(new ArrayList<Vehicle>());
 
 		when(personDaoMock.getPerson(id)).thenReturn(person);
 
 		doNothing().when(personDaoMock).deletePerson(id);
-		doNothing().when(vehicleDaoMock).updateVehicle(any(Vehicle.class));
 
 		Response response = target("persons/" + id).request().delete();
 
+		verify(vehicleDaoMock, never()).updateVehicle(any(Vehicle.class));
 		verify(personDaoMock).getPerson(id);
 		verify(personDaoMock).deletePerson(id);
 

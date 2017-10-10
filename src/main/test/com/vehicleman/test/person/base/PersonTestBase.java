@@ -1,7 +1,5 @@
 package com.vehicleman.test.person.base;
 
-import static org.mockito.Mockito.mock;
-
 import java.util.ArrayList;
 
 import javax.ws.rs.core.Application;
@@ -13,7 +11,6 @@ import com.vehicleman.backend.dao.PersonDAO;
 import com.vehicleman.backend.dao.VehicleDAO;
 import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
-import com.vehicleman.backend.services.PersonService;
 
 //class PersonServiceMock extends PersonService {
 //
@@ -37,9 +34,10 @@ public class PersonTestBase extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		personDaoMock = mock(PersonDAO.class);
-		vehicleDaoMock = mock(VehicleDAO.class);
-		return new ResourceConfig().register(new PersonService(personDaoMock, vehicleDaoMock));
+		PersonServiceMock personServiceMock = new PersonServiceMock();
+		personDaoMock = personServiceMock.getPersonDaoMock();
+		vehicleDaoMock = personServiceMock.getVehicleDaoMock();
+		return new ResourceConfig().register(personServiceMock);
 	}
 
 	@Override

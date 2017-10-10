@@ -1,6 +1,7 @@
 package com.vehicleman.backend.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -14,7 +15,7 @@ public class PersonVehicleMapper implements Serializable {
 	private List<Vehicle> vehicles;
 
 	public PersonVehicleMapper() {
-
+		vehicles = new ArrayList<Vehicle>();
 	}
 
 	public Person getPerson() {

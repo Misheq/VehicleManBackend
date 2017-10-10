@@ -7,8 +7,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -40,7 +38,6 @@ public class PersonPostTests extends PersonTestBase {
 
 	@Test
 	public void createPersonServiceWithoutVehicle() {
-		pvm.setVehicles(new ArrayList<Vehicle>());
 
 		doNothing().when(personDaoMock).createPerson(pvm.getPerson());
 		doNothing().when(vehicleDaoMock).updateVehicle(any(Vehicle.class));
