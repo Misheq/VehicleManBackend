@@ -20,7 +20,7 @@ import com.vehicleman.backend.entities.Manager;
 import io.swagger.annotations.Api;
 
 @Path("managers")
-@Api(value = "Vehicles")
+@Api(value = "Managers")
 public class ManagerService {
 
 	ManagerDAO managerDao = new ManagerDAO();

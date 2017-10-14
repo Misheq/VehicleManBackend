@@ -88,7 +88,7 @@ public class VehicleService {
 		 *
 		 **/
 
-		if (pvm.getVehicles() == null) {
+		if (pvm.getVehicles().isEmpty()) {
 			// for backend validation - on front end should technically not be able to do so
 			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Vehicle list empty\"}").build());
 		}
@@ -109,7 +109,7 @@ public class VehicleService {
 
 		// Check if all necessary vehicle fields are given
 
-		return Response.ok().entity("{\"message\":\"Vehicle successfully created\"}").build();
+		return Response.status(201).entity("{\"message\":\"Vehicle successfully created\"}").build();
 	}
 
 	@PUT
