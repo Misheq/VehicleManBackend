@@ -6,22 +6,16 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.HttpHeaders;
-
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.jayway.restassured.RestAssured;
 import com.vehicleman.backend.entities.PersonVehicleMapper;
 import com.vehicleman.backend.entities.Vehicle;
 
-public class VehicleITests {
+public class VehicleITests extends BaseITest {
 
-	@BeforeClass
-	public static void init() {
-		RestAssured.baseURI = "http://localhost";
-		RestAssured.port = 8082;
-		RestAssured.basePath = "/vehicleman/api/vehicles";
+	public VehicleITests() {
+		RestAssured.basePath = basePath + "/vehicles";
 	}
 
 	// GET
@@ -44,36 +38,51 @@ public class VehicleITests {
 	@Test
 	public void postVehicle() {
 
-		Vehicle v = new Vehicle();
-		v.setRegistrationNumber("belaaaa");
-		v.setVehicleType("car");
+		Vehicle vehicle = dummyVehicle();
 
 		List<Vehicle> vehicles = new ArrayList<>();
-		vehicles.add(v);
+		vehicles.add(vehicle);
 
 		PersonVehicleMapper pvm = new PersonVehicleMapper();
 		pvm.setVehicles(vehicles);
 
-		String locationHeader = given().contentType("application/json").body(pvm).when().post().then().statusCode(201)
-				.extract().header(HttpHeaders.LOCATION);
+		// create vehicle
+		String locationHeader = createResource(pvm);
 
 		// check if it has been created
-		Vehicle result = given().when().get(locationHeader).then().statusCode(200).extract().as(Vehicle.class);
+		Vehicle resultVehicle = getResource(locationHeader, Vehicle.class);
 
-		assertEquals(result.getRegistrationNumber(), v.getRegistrationNumber());
-		assertEquals(result.getVehicleType(), v.getVehicleType());
-		assertEquals(result.getPerson(), null);
+		assertEquals(resultVehicle.getRegistrationNumber(), vehicle.getRegistrationNumber());
+		assertEquals(resultVehicle.getVehicleType(), vehicle.getVehicleType());
+		assertEquals(resultVehicle.getPerson(), null);
 
 		// post again and check for conflict
-		given().contentType("application/json").body(pvm).when().post().then().statusCode(409);
+		checkResourceConflict(pvm);
 
-		String vehicleId = String.valueOf(result.getVehicleId());
+		// get vehicle id
+		String vehicleId = "/" + resultVehicle.getVehicleId();
+
+		// put
+		updateVehicle(vehicleId); // or use locationHeader instead
 
 		// delete the vehicle for consistency
-		given().when().delete(vehicleId).then().statusCode(204);
+		deleteResource(vehicleId); // or use locationHeader instead
 
 		// verify that the vehicle with the ID is gone
-		given().when().get(locationHeader).then().statusCode(404);
+		checkResourceNotFound(locationHeader);
+	}
+
+	public void updateVehicle(String vehicleId) {
+		Vehicle vehicle = dummyVehicle();
+
+		vehicle.setRegistrationNumber(vehicle.getRegistrationNumber() + " updated");
+		vehicle.setVehicleType(vehicle.getVehicleType() + " updated");
+
+		String locationHeader = updateResource(vehicleId, vehicle);
+		Vehicle resultVehicle = getResource(locationHeader, Vehicle.class);
+
+		assertEquals(resultVehicle.getRegistrationNumber().contains("updated"), true);
+		assertEquals(resultVehicle.getVehicleType().contains("updated"), true);
 	}
 
 	@Test
@@ -83,5 +92,4 @@ public class VehicleITests {
 
 		given().contentType("application/json").body(pvm).when().post().then().statusCode(404);
 	}
-
 }

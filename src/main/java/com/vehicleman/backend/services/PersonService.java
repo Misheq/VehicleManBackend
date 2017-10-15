@@ -117,7 +117,8 @@ public class PersonService {
 		person.setPersonId(id);
 		personDao.updatePerson(person);
 
-		return Response.ok().entity("{\"message\":\"Person with id: " + id + " updated successfully\"}").build();
+		return Response.ok().entity("{\"message\":\"Person with id: " + id + " updated successfully\"}")
+				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/persons/" + id).build();
 	}
 
 	@DELETE

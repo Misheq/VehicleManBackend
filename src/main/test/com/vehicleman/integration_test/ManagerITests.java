@@ -3,43 +3,20 @@ package com.vehicleman.integration_test;
 import static com.jayway.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
-import javax.ws.rs.core.HttpHeaders;
-
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.jayway.restassured.RestAssured;
 import com.vehicleman.backend.entities.Manager;
 
-public class ManagerITests {
+public class ManagerITests extends BaseITest {
 
-	public static final String ENDPOINT = "/managers";
-	public static String M_ID;
+	public static String managerId;
 
-	@BeforeClass
-	public static void init() {
-		RestAssured.baseURI = "http://localhost";
-		RestAssured.port = 8082;
-		RestAssured.basePath = "/vehicleman/api" + ENDPOINT;
-	}
-
-	public Manager dummyManager() {
-		Manager m = new Manager();
-		m.setFirstName("MFN");
-		m.setLastName("MLN");
-		m.setEmail("new1@test.com");
-		m.setPhone("+36 1 123 123");
-		m.setCompanyName("HelloCity Ltd.");
-
-		return m;
-	}
-
-	public Manager verifyManager(String url) {
-		return given().when().get(url).then().statusCode(200).extract().as(Manager.class);
+	public ManagerITests() {
+		RestAssured.basePath = basePath + "/managers";
 	}
 
 	// GET
-
 	@Test
 	public void listOfManagers() {
 		given().when().get().then().statusCode(200);
@@ -65,14 +42,10 @@ public class ManagerITests {
 	}
 
 	public void createManager() {
-
 		Manager manager = dummyManager();
-
-		String locationHeader = given().contentType("application/json").body(manager).when().post().then()
-				.statusCode(201).extract().header(HttpHeaders.LOCATION);
-
-		Manager m = verifyManager(locationHeader);
-		M_ID = "/" + m.getManagerId();
+		String locationHeader = createResource(manager);
+		Manager m = getResource(locationHeader, Manager.class);
+		managerId = "/" + m.getManagerId();
 		assertEquals(m.getEmail(), manager.getEmail());
 	}
 
@@ -80,7 +53,6 @@ public class ManagerITests {
 		given().contentType("application/json").body(dummyManager()).when().post().then().statusCode(409);
 	}
 
-	//	@Test
 	public void updateManager() {
 		Manager manager = dummyManager();
 
@@ -90,23 +62,19 @@ public class ManagerITests {
 		manager.setLastName(manager.getLastName() + " updated");
 		manager.setPhone(manager.getPhone() + " updated");
 
-		//		String sId = "/170";
-		String locationHeader = given().contentType("application/json").body(manager).when().put(M_ID).then()
-				.statusCode(200).extract().header(HttpHeaders.LOCATION);
+		String locationHeader = updateResource(managerId, manager);
+		Manager resultManager = getResource(locationHeader, Manager.class);
 
-		Manager m = given().when().get(locationHeader).then().statusCode(200).extract().as(Manager.class);
-
-		assertEquals(m.getEmail().contains("updated"), true);
-		assertEquals(m.getFirstName().contains("updated"), true);
-		assertEquals(m.getLastName().contains("updated"), true);
-		assertEquals(m.getCompanyName().contains("updated"), true);
-		assertEquals(m.getPhone().contains("updated"), true);
+		assertEquals(resultManager.getEmail().contains("updated"), true);
+		assertEquals(resultManager.getFirstName().contains("updated"), true);
+		assertEquals(resultManager.getLastName().contains("updated"), true);
+		assertEquals(resultManager.getCompanyName().contains("updated"), true);
+		assertEquals(resultManager.getPhone().contains("updated"), true);
 	}
 
 	public void deleteManager() {
-		given().when().delete(M_ID).then().statusCode(204);
-
-		given().when().get(M_ID).then().statusCode(404);
+		deleteResource(managerId);
+		checkResourceNotFound(managerId);
 	}
 
 }

@@ -137,7 +137,8 @@ public class VehicleService {
 		vehicle.setVehicleId(id);
 		vehicleDao.updateVehicle(vehicle);
 
-		return Response.ok().entity("{\"message\":\"Vehicle with id: " + id + " updated successfully\"}").build();
+		return Response.ok().entity("{\"message\":\"Vehicle with id: " + id + " updated successfully\"}")
+				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/vehicles/" + id).build();
 	}
 
 	@DELETE
