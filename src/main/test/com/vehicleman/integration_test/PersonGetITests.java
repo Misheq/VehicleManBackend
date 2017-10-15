@@ -90,11 +90,12 @@ public class PersonGetITests {// extends PersonBaseIT {
 	@Test
 	public void personPOSTTestWithNewVehicle() {
 
-		List<Vehicle> vehicles = new ArrayList<>();
-		vehicles.add(dummyVehicle());
-
-		Person p = dummyPerson();
 		Vehicle v = dummyVehicle();
+		v.setRegistrationNumber(v.getRegistrationNumber() + "-NEW");
+		Person p = dummyPerson();
+
+		List<Vehicle> vehicles = new ArrayList<>();
+		vehicles.add(v);
 
 		PersonVehicleMapper pvm = new PersonVehicleMapper();
 		pvm.setPerson(p);
@@ -110,7 +111,11 @@ public class PersonGetITests {// extends PersonBaseIT {
 
 		assertEquals(result, p);
 		assertEquals(result.getVehicles().isEmpty(), false);
-		assertEquals(result.getVehicles().get(0), v);
+		assertEquals(result.getVehicles().size(), 1);
+
+		Vehicle resultVehicle = result.getVehicles().get(0);
+		assertEquals(resultVehicle.getRegistrationNumber(), v.getRegistrationNumber());
+		assertEquals(resultVehicle.getVehicleType(), v.getVehicleType());
 	}
 
 	@Test
