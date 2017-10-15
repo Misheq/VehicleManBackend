@@ -2,7 +2,6 @@ package com.vehicleman.backend.services;
 
 import java.util.List;
 
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -12,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -62,8 +62,8 @@ public class PersonService {
 		Person person = personDao.getPerson(id);
 
 		if (person == null) {
-			throw new BadRequestException(
-					Response.status(400).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
+			throw new NotFoundException(Response.status(Response.Status.NOT_FOUND)
+					.entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
 		}
 
 		ObjectMapper om = new ObjectMapper();
@@ -85,7 +85,8 @@ public class PersonService {
 		// create person w/o  car -> must contain person w/o id, car-list can be empty
 		if (pvm.getPerson() == null) {
 			// for backend validation - on front end should technically not be able to do so
-			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Person not found\"}").build());
+			throw new NotFoundException(
+					Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"Person not found\"}").build());
 		}
 
 		// TODO: validate if not nullable fields are given
@@ -94,7 +95,12 @@ public class PersonService {
 
 		createMissingEntityAndMapWithExisting(pvm);
 
-		return Response.status(201).entity("{\"message\":\"Person created successfully\"}").build();
+		// TODO: port should be given dynamically
+
+		return Response.status(Response.Status.CREATED).entity("{\"message\":\"Person created successfully\"}")
+				.header(HttpHeaders.LOCATION,
+						"http://localhost:8082/vehicleman/api/persons/" + pvm.getPerson().getPersonId())
+				.build();
 	}
 
 	@PUT
@@ -104,8 +110,8 @@ public class PersonService {
 
 		Person per = personDao.getPerson(id);
 		if (per == null) {
-			throw new NotFoundException(
-					Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
+			throw new NotFoundException(Response.status(Response.Status.NOT_FOUND)
+					.entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
 		}
 
 		person.setPersonId(id);
@@ -120,8 +126,8 @@ public class PersonService {
 
 		Person person = personDao.getPerson(id);
 		if (person == null) {
-			throw new NotFoundException(
-					Response.status(404).entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
+			throw new NotFoundException(Response.status(Response.Status.NOT_FOUND)
+					.entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
 		}
 
 		// workaround ----------------------
@@ -137,9 +143,14 @@ public class PersonService {
 	// HELPERS
 
 	private void createMissingEntityAndMapWithExisting(PersonVehicleMapper pvm) {
+
 		for (Vehicle v : pvm.getVehicles()) {
 			v.setPerson(pvm.getPerson());
-			vehicleDao.updateVehicle(v);
+			if (containsVehicle(v)) {
+				vehicleDao.updateVehicle(v);
+			} else {
+				vehicleDao.createVehicle(v);
+			}
 		}
 	}
 
@@ -148,5 +159,15 @@ public class PersonService {
 			v.setPerson(null);
 			vehicleDao.updateVehicle(v);
 		}
+	}
+
+	private boolean containsVehicle(Vehicle vehicle) {
+		List<Vehicle> vehicles = vehicleDao.getVehicles();
+		for (Vehicle v : vehicles) {
+			if (v.getVehicleId() == vehicle.getVehicleId()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

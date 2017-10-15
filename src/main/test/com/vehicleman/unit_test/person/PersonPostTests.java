@@ -1,4 +1,4 @@
-package com.vehicleman.test.person.tests;
+package com.vehicleman.unit_test.person;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.vehicleman.backend.entities.PersonVehicleMapper;
 import com.vehicleman.backend.entities.Vehicle;
-import com.vehicleman.test.person.base.PersonTestBase;
+import com.vehicleman.unit_test.base.PersonTestBase;
 
 public class PersonPostTests extends PersonTestBase {
 
@@ -64,8 +64,9 @@ public class PersonPostTests extends PersonTestBase {
 
 		Response resp = target("persons").request().post(Entity.entity(pvm, MediaType.APPLICATION_JSON));
 
-		verify(personDaoMock).createPerson(person);
-		verify(vehicleDaoMock, times(1)).updateVehicle(any(Vehicle.class));
+		verify(personDaoMock, times(1)).createPerson(person);
+		verify(vehicleDaoMock, never()).updateVehicle(any(Vehicle.class));
+		verify(vehicleDaoMock, times(1)).createVehicle(any(Vehicle.class));
 
 		System.out.println(resp.readEntity(String.class));
 		assertEquals(Response.Status.CREATED.getStatusCode(), resp.getStatus());
@@ -85,8 +86,9 @@ public class PersonPostTests extends PersonTestBase {
 
 		Response resp = target("persons").request().post(Entity.entity(pvm, MediaType.APPLICATION_JSON));
 
-		verify(personDaoMock).createPerson(person);
-		verify(vehicleDaoMock, times(2)).updateVehicle(any(Vehicle.class));
+		verify(personDaoMock, times(1)).createPerson(person);
+		verify(vehicleDaoMock, never()).updateVehicle(any(Vehicle.class));
+		verify(vehicleDaoMock, times(2)).createVehicle(any(Vehicle.class));
 
 		System.out.println(resp.readEntity(String.class));
 		assertEquals(Response.Status.CREATED.getStatusCode(), resp.getStatus());

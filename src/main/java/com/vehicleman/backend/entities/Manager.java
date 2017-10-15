@@ -12,42 +12,40 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+@NamedQueries({
 
-@NamedQueries({ 
-		
-		@NamedQuery(name = "Manager.get_All",	query = "from Manager m") ,
-		@NamedQuery(name = "Manager.get_Manager_By_Id",	query = "from Manager m where m.managerId = :id") 		
-})
-
+		@NamedQuery(name = "Manager.get_All", query = "from Manager m"),
+		@NamedQuery(name = "Manager.get_Manager_By_Id", query = "from Manager m where m.managerId = :id"),
+		@NamedQuery(name = "Manager.get_Manager_By_Email", query = "from Manager m where m.email = :email") })
 
 @Entity
 @Table(name = "MANAGER")
 @XmlRootElement
 public class Manager implements Serializable {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO) //(generator = "uuid")
-//	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	//	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@Column(name = "manager_id", length = 45, unique = true, nullable = false)
 	private int managerId;
-	
+
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
-	
+
 	@Column(name = "last_name", nullable = false)
 	private String lastName;
-	
+
 	@Column(name = "email", unique = true, nullable = false)
 	private String email;
-	
+
 	@Column(name = "phone", nullable = true)
 	private String phone = "";
-	
+
 	@Column(name = "company_name", nullable = true)
 	private String companyName = "";
-	
+
 	public Manager() {
-		
+
 	}
 
 	public int getManagerId() {
@@ -81,7 +79,7 @@ public class Manager implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 	public String getPhone() {
 		return phone;
 	}
@@ -100,7 +98,8 @@ public class Manager implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Manager [id=" + managerId + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";
+		return "Manager [id=" + managerId + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+				+ "]";
 	}
-	
+
 }

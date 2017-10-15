@@ -11,6 +11,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -23,7 +25,7 @@ import io.swagger.annotations.Api;
 @Api(value = "Managers")
 public class ManagerService {
 
-	ManagerDAO managerDao = new ManagerDAO();
+	protected ManagerDAO managerDao = new ManagerDAO();
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -53,10 +55,17 @@ public class ManagerService {
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response createManager(Manager manager) {
 
+		if (managerAlreadyExists(manager.getEmail())) {
+			throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
+					.entity("{\"error\":\"Manager with the email " + manager.getEmail() + " already exists\"}")
+					.build());
+		}
+
 		managerDao.createManager(manager);
 
-		// TODO: ensure the message is in json - this is not working!
-		return Response.status(201).entity("{\"message\": Manager has been created successfully\"}").build();
+		return Response.status(201).entity("{\"message\": Manager has been created successfully\"}")
+				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/managers/" + manager.getManagerId())
+				.build();
 	}
 
 	@PUT
@@ -79,6 +88,7 @@ public class ManagerService {
 		managerDao.updateManager(manager);
 
 		return Response.ok().entity("{\"message\":\"Manager with id: " + id + " has been updated successfully\"}")
+				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/managers/" + manager.getManagerId())
 				.build();
 	}
 
@@ -98,5 +108,10 @@ public class ManagerService {
 
 		return Response.noContent().entity("{\"message\":\"Manager with id: " + id + " deleted successfully\"}")
 				.build();
+	}
+
+	// helper
+	private boolean managerAlreadyExists(String email) {
+		return managerDao.findManagerByEmail(email) != null;
 	}
 }

@@ -1,4 +1,4 @@
-package com.vehicleman.test.person.base;
+package com.vehicleman.unit_test.base;
 
 import static org.mockito.Mockito.mock;
 

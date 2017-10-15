@@ -1,4 +1,4 @@
-package com.vehicleman.test.person.tests;
+package com.vehicleman.unit_test.person;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.never;
@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import org.junit.Test;
 
 import com.vehicleman.backend.entities.Person;
-import com.vehicleman.test.person.base.PersonTestBase;
+import com.vehicleman.unit_test.base.PersonTestBase;
 
 public class PersonPutTests extends PersonTestBase {
 

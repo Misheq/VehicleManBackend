@@ -1,4 +1,4 @@
-package com.vehicleman.test.person.tests;
+package com.vehicleman.unit_test.person;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -8,13 +8,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import javax.ws.rs.NotFoundException;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
 import com.vehicleman.backend.entities.Vehicle;
-import com.vehicleman.test.person.base.PersonTestBase;
+import com.vehicleman.unit_test.base.PersonTestBase;
 
 public class PersonDeleteTests extends PersonTestBase {
 
@@ -28,9 +28,9 @@ public class PersonDeleteTests extends PersonTestBase {
 
 		Response response = target("persons/" + id).request().delete();
 
-		verify(vehicleDaoMock, never()).updateVehicle(any(Vehicle.class));
 		verify(personDaoMock).getPerson(id);
 		verify(personDaoMock).deletePerson(id);
+		verify(vehicleDaoMock, never()).updateVehicle(any(Vehicle.class));
 
 		assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
 	}
@@ -82,7 +82,7 @@ public class PersonDeleteTests extends PersonTestBase {
 	public void deletePersonServiceNotFound() {
 		int id = -1;
 
-		when(personDaoMock.getPerson(id)).thenReturn(null).thenThrow(new NotFoundException());
+		when(personDaoMock.getPerson(id)).thenReturn(null).thenThrow(new BadRequestException());
 
 		Response response = target("persons/" + id).request().delete();
 

@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @NamedQueries({
-
+		@NamedQuery(name = "Vehicle.get_Vehicle_By_Registration_Number", query = "from Vehicle v where v.registrationNumber = :registrationNumber"),
 		@NamedQuery(name = "Vehicle.get_All", query = "from Vehicle v"),
 		@NamedQuery(name = "Vehicle.get_Vehicle_By_Id", query = "from Vehicle v where v.vehicleId = :id") })
 

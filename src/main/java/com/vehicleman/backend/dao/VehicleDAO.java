@@ -14,7 +14,7 @@ public class VehicleDAO {
 	private Session session;
 
 	public VehicleDAO() {
-		
+
 	}
 
 	public List<Vehicle> getVehicles() {
@@ -27,11 +27,11 @@ public class VehicleDAO {
 
 			Query query = session.getNamedQuery("Vehicle.get_All");
 			vehicles = query.list();
-			
+
 			session.getTransaction().commit();
 
 		} catch (Exception e) {
-			if(session != null) {
+			if (session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
@@ -55,11 +55,11 @@ public class VehicleDAO {
 
 			Query query = session.getNamedQuery("Vehicle.get_Vehicle_By_Id").setParameter("id", id);
 			vehicle = (Vehicle) query.uniqueResult();
-			
+
 			session.getTransaction().commit();
 
 		} catch (Exception e) {
-			if(session != null) {
+			if (session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
@@ -74,19 +74,48 @@ public class VehicleDAO {
 
 	}
 
-	public void createVehicle(Vehicle vehicle) {
+	public Vehicle getVehicleByRegistrationNumber(String registrationNumber) {
 		session = null;
-		
+		Vehicle vehicle = null;
+
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
 			session.beginTransaction();
-			
-			session.save(vehicle);
-			
+
+			Query query = session.getNamedQuery("Vehicle.get_Vehicle_By_Registration_Number")
+					.setParameter("registrationNumber", registrationNumber);
+			vehicle = (Vehicle) query.uniqueResult();
+
 			session.getTransaction().commit();
 
 		} catch (Exception e) {
-			if(session != null) {
+			if (session != null) {
+				session.getTransaction().rollback();
+				e.printStackTrace();
+			}
+
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+
+		return vehicle;
+	}
+
+	public void createVehicle(Vehicle vehicle) {
+		session = null;
+
+		try {
+			session = HibernateUtil.getSessionFactory().openSession();
+			session.beginTransaction();
+
+			session.save(vehicle);
+
+			session.getTransaction().commit();
+
+		} catch (Exception e) {
+			if (session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
@@ -104,24 +133,22 @@ public class VehicleDAO {
 
 	public void updateVehicle(Vehicle vehicle) {
 		session = null;
-		
+
 		// you have to set all the attributes of the given object to update!
 
 		// TODO: you must give key + attribute you want to modify everything
 		// else should remain the same
-		// TODO: handle bad request - if id is missing or non existent
-		// maybe update only on path /id
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
 			session.beginTransaction();
-			
+
 			session.update(vehicle);
-			
+
 			session.getTransaction().commit();
 
 		} catch (Exception e) {
-			if(session != null) {
+			if (session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
@@ -135,7 +162,7 @@ public class VehicleDAO {
 
 	public void deleteVehicle(int id) {
 		session = null;
-		
+
 		// TODO: create query to delete instantly. do not fetch first and then
 		// delete
 		// TODO: handle illegalArgumentException if called on not existing object id
@@ -151,7 +178,7 @@ public class VehicleDAO {
 			session.getTransaction().commit();
 
 		} catch (Exception e) {
-			if(session != null) {
+			if (session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}

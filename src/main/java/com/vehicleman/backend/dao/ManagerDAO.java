@@ -31,14 +31,14 @@ public class ManagerDAO {
 
 			session.getTransaction().commit();
 
-		} catch(Exception e) {
-			if(session != null) {
+		} catch (Exception e) {
+			if (session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
 
 		} finally {
-			if(session != null) {
+			if (session != null) {
 				session.close();
 			}
 		}
@@ -59,20 +59,48 @@ public class ManagerDAO {
 
 			session.getTransaction().commit();
 
-		} catch(Exception e) {
-			if(session != null) {
+		} catch (Exception e) {
+			if (session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
 
 		} finally {
-			if(session != null) {
+			if (session != null) {
 				session.close();
 			}
 		}
 
 		return manager;
 
+	}
+
+	public Manager findManagerByEmail(String email) {
+		session = null;
+		Manager manager = null;
+
+		try {
+			session = HibernateUtil.getSessionFactory().openSession();
+			session.beginTransaction();
+
+			Query query = session.getNamedQuery("Manager.get_Manager_By_Email").setParameter("email", email);
+			manager = (Manager) query.uniqueResult();
+
+			session.getTransaction().commit();
+
+		} catch (Exception e) {
+			if (session != null) {
+				session.getTransaction().rollback();
+				e.printStackTrace();
+			}
+
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+
+		return manager;
 	}
 
 	public void createManager(Manager manager) {
@@ -86,14 +114,14 @@ public class ManagerDAO {
 
 			session.getTransaction().commit();
 
-		} catch(Exception e) {
-			if(session != null) {
+		} catch (Exception e) {
+			if (session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
 
 		} finally {
-			if(session != null) {
+			if (session != null) {
 				session.close();
 			}
 		}
@@ -116,14 +144,14 @@ public class ManagerDAO {
 
 			session.getTransaction().commit();
 
-		} catch(Exception e) {
-			if(session != null) {
+		} catch (Exception e) {
+			if (session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
 
 		} finally {
-			if(session != null) {
+			if (session != null) {
 				session.close();
 			}
 		}
@@ -145,14 +173,14 @@ public class ManagerDAO {
 
 			session.getTransaction().commit();
 
-		} catch(Exception e) {
-			if(session != null) {
+		} catch (Exception e) {
+			if (session != null) {
 				session.getTransaction().rollback();
 				e.printStackTrace();
 			}
 
 		} finally {
-			if(session != null) {
+			if (session != null) {
 				session.close();
 			}
 		}

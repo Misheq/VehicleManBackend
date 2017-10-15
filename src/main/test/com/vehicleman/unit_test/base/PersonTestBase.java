@@ -1,4 +1,4 @@
-package com.vehicleman.test.person.base;
+package com.vehicleman.unit_test.base;
 
 import java.util.ArrayList;
 
@@ -11,17 +11,6 @@ import com.vehicleman.backend.dao.PersonDAO;
 import com.vehicleman.backend.dao.VehicleDAO;
 import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
-
-//class PersonServiceMock extends PersonService {
-//
-//	private final PersonDAO personDaoMock;
-//	private final VehicleDAO vehicleDaoMock;
-//
-//	public PersonServiceMock() {
-//		personDaoMock = mock(PersonDAO.class);
-//		vehicleDaoMock = mock(VehicleDAO.class);
-//	}
-//}
 
 public class PersonTestBase extends JerseyTest {
 

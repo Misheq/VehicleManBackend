@@ -1,4 +1,4 @@
-package com.vehicleman.test.person.tests;
+package com.vehicleman.unit_test.person;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -7,14 +7,14 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vehicleman.backend.entities.Person;
-import com.vehicleman.test.person.base.PersonTestBase;
+import com.vehicleman.unit_test.base.PersonTestBase;
 
 public class PersonGetTests extends PersonTestBase {
 
@@ -81,17 +81,17 @@ public class PersonGetTests extends PersonTestBase {
 	}
 
 	@Test
-	public void getPersonByIdBadRequest() {
+	public void getPersonByIdServiceNotFound() {
 		int id = -1;
 
-		when(personDaoMock.getPerson(id)).thenReturn(null).thenThrow(new BadRequestException());
+		when(personDaoMock.getPerson(id)).thenReturn(null).thenThrow(new NotFoundException());
 
 		Response response = target("persons/" + id).request().get();
 
 		verify(personDaoMock).getPerson(id);
 
 		System.out.println(response.readEntity(String.class));
-		assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
 	}
 
 }

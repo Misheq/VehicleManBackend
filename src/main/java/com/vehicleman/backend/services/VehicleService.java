@@ -11,6 +11,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -28,8 +30,8 @@ import io.swagger.annotations.Api;
 @Api(value = "Vehicles")
 public class VehicleService {
 
-	VehicleDAO vehicleDao = new VehicleDAO();
-	PersonDAO personDao = new PersonDAO();
+	protected VehicleDAO vehicleDao = new VehicleDAO();
+	protected PersonDAO personDao = new PersonDAO();
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -97,9 +99,16 @@ public class VehicleService {
 		// TODO: validate not nullable fields are given
 		// create vehicle w/o id and person, empty person object
 		// create vehicle w/o id with person, Person id must be given
+
 		Vehicle vehicle = pvm.getVehicles().get(0);
-		if (containsPerson(pvm.getPerson())) {
-			Person person = pvm.getPerson();
+		if (vehicleAlreadyExist(vehicle.getRegistrationNumber())) {
+			throw new WebApplicationException(
+					Response.status(Response.Status.CONFLICT).entity("{\"error\":\"Vehicle with the registration number"
+							+ vehicle.getRegistrationNumber() + " already exists\"}").build());
+		}
+
+		Person person = pvm.getPerson();
+		if (person != null && containsPerson(person)) {
 			vehicle.setPerson(person);
 		} else {
 			vehicle.setPerson(null);
@@ -109,7 +118,9 @@ public class VehicleService {
 
 		// Check if all necessary vehicle fields are given
 
-		return Response.status(201).entity("{\"message\":\"Vehicle successfully created\"}").build();
+		return Response.status(Response.Status.CREATED).entity("{\"message\":\"Vehicle successfully created\"}")
+				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/vehicles/" + vehicle.getVehicleId())
+				.build();
 	}
 
 	@PUT
@@ -147,6 +158,10 @@ public class VehicleService {
 	}
 
 	// HELPERS
+
+	private boolean vehicleAlreadyExist(String registrationNumber) {
+		return vehicleDao.getVehicleByRegistrationNumber(registrationNumber) != null;
+	}
 
 	private boolean containsPerson(Person person) {
 		List<Person> persons = personDao.getPersons();
