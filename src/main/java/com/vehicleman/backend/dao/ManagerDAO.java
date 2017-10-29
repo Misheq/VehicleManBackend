@@ -9,6 +9,7 @@ import org.hibernate.Transaction;
 import org.mindrot.jbcrypt.BCrypt;
 
 import com.vehicleman.backend.entities.Manager;
+import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.util.HibernateUtil;
 
 public class ManagerDAO {
@@ -46,6 +47,34 @@ public class ManagerDAO {
 		}
 
 		return managers;
+	}
+
+	public List<Person> getManagerPersons(int id) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = null;
+		List<Person> persons = new ArrayList<>();
+
+		try {
+			transaction = session.beginTransaction();
+
+			Query query = session.getNamedQuery("Manager.get_Manager_Persons").setParameter("id", id);
+			persons = query.list();
+
+			transaction.commit();
+
+		} catch (Exception e) {
+			if (session != null) {
+				transaction.rollback();
+				e.printStackTrace();
+			}
+
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+
+		return persons;
 	}
 
 	public Manager getManager(int id) {

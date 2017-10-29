@@ -12,11 +12,16 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @NamedQueries({
 
 		@NamedQuery(name = "Manager.get_All", query = "from Manager m"),
 		@NamedQuery(name = "Manager.get_Manager_By_Id", query = "from Manager m where m.managerId = :id"),
-		@NamedQuery(name = "Manager.get_Manager_By_Email", query = "from Manager m where m.email = :email") })
+		@NamedQuery(name = "Manager.get_Manager_By_Email", query = "from Manager m where m.email = :email"),
+		@NamedQuery(name = "Manager.get_Manager_Persons", query = "from Person p where p.managerId = :id") // ask dudi how to get objects related to this manager
+
+})
 
 @Entity
 @Table(name = "MANAGER")
@@ -38,6 +43,7 @@ public class Manager implements Serializable {
 	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 
+	@JsonIgnore
 	@Column(name = "password", nullable = false)
 	private String password;
 

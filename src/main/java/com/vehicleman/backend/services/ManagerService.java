@@ -6,20 +6,19 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.mindrot.jbcrypt.BCrypt;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vehicleman.backend.dao.ManagerDAO;
 import com.vehicleman.backend.entities.Manager;
+import com.vehicleman.backend.entities.Person;
 
 import io.swagger.annotations.Api;
 
@@ -53,22 +52,24 @@ public class ManagerService {
 		return Response.ok(mgr).build();
 	}
 
-	@POST
-	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Response createManager(Manager manager) {
+	@GET
+	@Path("/{id}/persons")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Response getManagerPersons(@PathParam("id") int id) {
 
-		if (managerAlreadyExists(manager.getEmail())) {
-			throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
-					.entity("{\"error\":\"Manager with the email " + manager.getEmail() + " already exists\"}")
-					.build());
+		List<Person> persons = managerDao.getManagerPersons(id);
+
+		ObjectMapper om = new ObjectMapper();
+
+		Response response = null;
+
+		try {
+			response = Response.ok().entity(om.writeValueAsString(persons)).build();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
 		}
 
-		manager.setPassword(BCrypt.hashpw(manager.getPassword(), BCrypt.gensalt()));
-		managerDao.createManager(manager);
-
-		return Response.status(201).entity("{\"message\":\"Manager has been created successfully\"}")
-				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/managers/" + manager.getManagerId())
-				.build();
+		return response;
 	}
 
 	@PUT
@@ -113,8 +114,4 @@ public class ManagerService {
 				.build();
 	}
 
-	// helper
-	private boolean managerAlreadyExists(String email) {
-		return managerDao.findManagerByEmail(email) != null;
-	}
 }

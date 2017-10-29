@@ -37,6 +37,9 @@ public class Person implements Serializable {
 	@Column(name = "person_id", length = 45, unique = true, nullable = false)
 	private int personId;
 
+	@Column(name = "manager_id", nullable = false)
+	private int managerId;
+
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
 
@@ -66,6 +69,14 @@ public class Person implements Serializable {
 
 	public void setPersonId(int personId) {
 		this.personId = personId;
+	}
+
+	public int getManagerId() {
+		return managerId;
+	}
+
+	public void setManagerId(int managerId) {
+		this.managerId = managerId;
 	}
 
 	public List<Vehicle> getVehicles() {
