@@ -38,6 +38,9 @@ public class Manager implements Serializable {
 	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 
+	@Column(name = "password", nullable = false)
+	private String password;
+
 	@Column(name = "phone", nullable = true)
 	private String phone = "";
 
@@ -78,6 +81,14 @@ public class Manager implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getPhone() {

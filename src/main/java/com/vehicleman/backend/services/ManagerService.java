@@ -16,6 +16,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.vehicleman.backend.dao.ManagerDAO;
 import com.vehicleman.backend.entities.Manager;
 
@@ -61,9 +63,10 @@ public class ManagerService {
 					.build());
 		}
 
+		manager.setPassword(BCrypt.hashpw(manager.getPassword(), BCrypt.gensalt()));
 		managerDao.createManager(manager);
 
-		return Response.status(201).entity("{\"message\": Manager has been created successfully\"}")
+		return Response.status(201).entity("{\"message\":\"Manager has been created successfully\"}")
 				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/managers/" + manager.getManagerId())
 				.build();
 	}

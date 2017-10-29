@@ -18,7 +18,7 @@ public class BaseITest {
 	@BeforeClass
 	public static void init() {
 		RestAssured.baseURI = "http://localhost";
-		RestAssured.port = 8082;
+		RestAssured.port = 8000;
 		basePath = "/vehicleman/api";
 	}
 

@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.vehicleman.backend.entities.Manager;
 import com.vehicleman.backend.util.HibernateUtil;
@@ -103,20 +105,29 @@ public class ManagerDAO {
 		return manager;
 	}
 
+	public Manager loginManager(String email, String password) {
+		Manager manager = findManagerByEmail(email);
+		if (manager != null) {
+			if (BCrypt.checkpw(password, manager.getPassword())) {
+				return manager;
+			}
+		}
+
+		return null;
+	}
+
 	public void createManager(Manager manager) {
-		session = null;
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = null;
 
 		try {
-			session = HibernateUtil.getSessionFactory().openSession();
-			session.beginTransaction();
-
+			transaction = session.beginTransaction();
 			session.save(manager);
-
-			session.getTransaction().commit();
+			transaction.commit();
 
 		} catch (Exception e) {
 			if (session != null) {
-				session.getTransaction().rollback();
+				transaction.rollback();
 				e.printStackTrace();
 			}
 
