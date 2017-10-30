@@ -39,11 +39,6 @@ public class VehicleService {
 
 		List<Vehicle> vehicles = vehicleDao.getVehicles();
 
-		//		// sets transient property assignedPerson
-		//		for(Vehicle v : vehicles) {
-		//			v.setAssignedPerson(v.getPerson().toString());
-		//		}
-
 		ObjectMapper om = new ObjectMapper();
 
 		try {
@@ -64,9 +59,6 @@ public class VehicleService {
 			throw new NotFoundException(
 					Response.status(404).entity("{\"error\":\"Vehicle with id: " + id + " not found\"}").build());
 		}
-
-		//		// sets transient property assignedPerson
-		//		vehicle.setAssignedPerson(vehicle.getPerson().toString());
 
 		ObjectMapper om = new ObjectMapper();
 
@@ -91,7 +83,6 @@ public class VehicleService {
 		 **/
 
 		if (pvm.getVehicles().isEmpty()) {
-			// for backend validation - on front end should technically not be able to do so
 			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Vehicle list empty\"}").build());
 		}
 
@@ -110,8 +101,10 @@ public class VehicleService {
 		Person person = pvm.getPerson();
 		if (person != null && containsPerson(person)) {
 			vehicle.setPerson(person);
+			vehicle.setAssigneeId(String.valueOf(person.getPersonId()));
 		} else {
 			vehicle.setPerson(null);
+			vehicle.setAssigneeId("");
 		}
 
 		vehicleDao.createVehicle(vehicle);
@@ -128,6 +121,9 @@ public class VehicleService {
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response updateVehicle(@PathParam("id") int id, Vehicle vehicle) {
 
+		// TODO: must pass person vehicle mapper (pvm) to be able to update its person (at least id)
+		// TODO: vehicle must save assigned person id
+
 		Vehicle veh = vehicleDao.getVehicle(id);
 		if (veh == null) {
 			throw new NotFoundException(
@@ -135,6 +131,27 @@ public class VehicleService {
 		}
 
 		vehicle.setVehicleId(id);
+
+		// New code
+		Person person;
+
+		/**
+		 * if assignee id is not empty -> case 1: person exists -> case 2: person id is invalid
+		 *
+		 * if assignee id is empty -> set person to null
+		 */
+		if (!vehicle.getAssigneeId().equals("")) {
+			int personId = Integer.parseInt(vehicle.getAssigneeId());
+			person = personDao.getPerson(personId);
+			vehicle.setPerson(person);
+
+			if (person == null) {
+				vehicle.setAssigneeId("");
+			}
+		} else {
+			person = null;
+		}
+
 		vehicleDao.updateVehicle(vehicle);
 
 		return Response.ok().entity("{\"message\":\"Vehicle with id: " + id + " updated successfully\"}")

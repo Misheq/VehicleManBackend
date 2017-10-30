@@ -39,8 +39,12 @@ public class Vehicle implements Serializable {
 	@Column(name = "vehicle_type", nullable = false)
 	private String vehicleType;
 
-	@Column(name = "reg_no", unique = true)
+	@Column(name = "reg_no", unique = true, nullable = false)
 	private String registrationNumber;
+
+	// string value because default value would be 0 instead of ""
+	@Column(name = "assignee_id")
+	private String assigneeId = "";
 
 	//	@Transient
 	//	private String assignedPerson;
@@ -77,6 +81,14 @@ public class Vehicle implements Serializable {
 
 	public void setRegistrationNumber(String registrationNumber) {
 		this.registrationNumber = registrationNumber;
+	}
+
+	public String getAssigneeId() {
+		return assigneeId;
+	}
+
+	public void setAssigneeId(String assigneeId) {
+		this.assigneeId = assigneeId;
 	}
 
 	public Person getPerson() {
@@ -132,6 +144,8 @@ public class Vehicle implements Serializable {
 		return true;
 	}
 
+	// planned
+	// String color;
 	// String brand;
 	// String model;
 	// String company;
@@ -140,6 +154,8 @@ public class Vehicle implements Serializable {
 	// Date dateOfAquirement;
 	// Date registrationDate;
 	// Date registrationExpirationDate;
+
+	// very optional
 	// int totalDistance;
 	// int height;
 	// int width;

@@ -125,19 +125,12 @@ public class VehicleDAO {
 				session.close();
 			}
 		}
-
-		// handle MySQLIntegrityConstraintViolationException - > create entity
-		// with same key (if key will be auto generated, then it is not
-		// necessary to be given explicitly)
 	}
 
 	public void updateVehicle(Vehicle vehicle) {
 		session = null;
 
 		// you have to set all the attributes of the given object to update!
-
-		// TODO: you must give key + attribute you want to modify everything
-		// else should remain the same
 
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
