@@ -46,9 +46,6 @@ public class Vehicle implements Serializable {
 	@Column(name = "assignee_id")
 	private String assigneeId = "";
 
-	//	@Transient
-	//	private String assignedPerson;
-
 	@ManyToOne(targetEntity = Person.class, //
 			cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.EAGER) // was refresh
 	@JsonBackReference

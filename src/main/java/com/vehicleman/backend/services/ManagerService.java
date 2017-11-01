@@ -10,9 +10,12 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +30,9 @@ import io.swagger.annotations.Api;
 public class ManagerService {
 
 	protected ManagerDAO managerDao = new ManagerDAO();
+
+	@Context
+	private SecurityContext securityContext;
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -57,14 +63,24 @@ public class ManagerService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getManagerPersons(@PathParam("id") int id) {
 
+		Manager manager = managerDao.getManager(id);
+
+		if (manager == null) {
+			return Response.status(Status.BAD_REQUEST)
+					.entity("{\"message\":\"Manager with id " + id + " does not exist\"}").build();
+		}
+
+		String email = securityContext.getUserPrincipal().getName();
+
+		if (!manager.getEmail().equals(email)) {
+			return Response.status(Status.FORBIDDEN).entity("{\"message\":\"Access forbidden\"}").build();
+		}
+
 		List<Person> persons = managerDao.getManagerPersons(id);
-
-		ObjectMapper om = new ObjectMapper();
-
-		Response response = null;
+		Response response = Response.status(Status.INTERNAL_SERVER_ERROR).build();
 
 		try {
-			response = Response.ok().entity(om.writeValueAsString(persons)).build();
+			response = Response.ok().entity(new ObjectMapper().writeValueAsString(persons)).build();
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

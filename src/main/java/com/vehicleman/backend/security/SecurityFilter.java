@@ -24,10 +24,10 @@ public class SecurityFilter implements ContainerRequestFilter {
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 
-		// for testing purpose authorization is disabled
-		if (true) {
-			return;
-		}
+		//		// for testing purpose authorization is disabled
+		//		if (true) {
+		//			return;
+		//		}
 
 		//		 if you want to secure specific endpoints
 		if (!requestContext.getUriInfo().getPath().contains(SECURED_URL_PREFIX)) {
@@ -47,6 +47,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 				Manager manager = managerDao.loginManager(email, password);
 
 				if (manager != null) {
+					requestContext.setSecurityContext(new BaseSecurityContext(manager));
 					return;
 				}
 			}

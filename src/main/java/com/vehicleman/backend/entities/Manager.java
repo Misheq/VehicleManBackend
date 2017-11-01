@@ -1,6 +1,7 @@
 package com.vehicleman.backend.entities;
 
 import java.io.Serializable;
+import java.security.Principal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "MANAGER")
 @XmlRootElement
-public class Manager implements Serializable {
+public class Manager implements Serializable, Principal {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO) //(generator = "uuid")
@@ -117,6 +118,11 @@ public class Manager implements Serializable {
 	public String toString() {
 		return "Manager [id=" + managerId + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
 				+ "]";
+	}
+
+	@Override
+	public String getName() {
+		return email;
 	}
 
 }
