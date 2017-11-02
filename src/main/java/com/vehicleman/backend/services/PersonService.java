@@ -115,6 +115,22 @@ public class PersonService {
 		}
 
 		person.setPersonId(id);
+
+		Vehicle vehicle = new Vehicle();
+		if (person.getVehicles().size() != 0) {
+			vehicle = person.getVehicles().get(0);
+			vehicle.setPerson(person);
+			vehicle.setAssigneeId(String.valueOf(person.getPersonId()));
+		} else {
+			Person p = personDao.getPerson(person.getPersonId());
+			if (p.getVehicles().size() != 0) {
+				vehicle = p.getVehicles().get(0);
+				vehicle.setPerson(null);
+				vehicle.setAssigneeId("");
+			}
+		}
+
+		vehicleDao.updateVehicle(vehicle);
 		personDao.updatePerson(person);
 
 		return Response.ok().entity("{\"message\":\"Person with id: " + id + " updated successfully\"}")
