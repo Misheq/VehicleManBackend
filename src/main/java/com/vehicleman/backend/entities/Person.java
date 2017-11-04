@@ -22,7 +22,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @NamedQueries({
 
 		@NamedQuery(name = "Person.get_All", query = "from Person a"),
-		@NamedQuery(name = "Person.get_Person_By_Id", query = "from Person a where a.personId = :id") })
+		@NamedQuery(name = "Person.get_Person_By_Id", query = "from Person a where a.personId = :id"),
+		@NamedQuery(name = "Person.get_Person_By_Email", query = "from Person a where a.email = :email") })
 
 @Entity
 @Table(name = "PERSON")
@@ -46,7 +47,7 @@ public class Person implements Serializable {
 	@Column(name = "last_name", nullable = false)
 	private String lastName;
 
-	@Column(name = "email", nullable = false)
+	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 
 	@Column(name = "company_name", nullable = true)

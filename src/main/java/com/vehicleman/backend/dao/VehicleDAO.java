@@ -156,10 +156,6 @@ public class VehicleDAO {
 	public void deleteVehicle(int id) {
 		session = null;
 
-		// TODO: create query to delete instantly. do not fetch first and then
-		// delete
-		// TODO: handle illegalArgumentException if called on not existing object id
-
 		Vehicle vehicle = getVehicle(id);
 
 		try {

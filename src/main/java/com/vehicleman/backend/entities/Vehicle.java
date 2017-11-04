@@ -47,7 +47,7 @@ public class Vehicle implements Serializable {
 	private String assigneeId = "";
 
 	@ManyToOne(targetEntity = Person.class, //
-			cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.EAGER) // was refresh
+			cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.EAGER) // CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
 	@JsonBackReference
 	@JoinColumn(name = "person_id")
 	private Person person;

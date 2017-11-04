@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vehicleman.backend.dao.PersonDAO;
 import com.vehicleman.backend.dao.VehicleDAO;
 import com.vehicleman.backend.entities.Person;
-import com.vehicleman.backend.entities.PersonVehicleMapper;
 import com.vehicleman.backend.entities.Vehicle;
 
 import io.swagger.annotations.Api;
@@ -54,11 +53,8 @@ public class VehicleService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getVehicle(@PathParam("id") int id) {
 
+		validateVehicleExists(id);
 		Vehicle vehicle = vehicleDao.getVehicle(id);
-		if (vehicle == null) {
-			throw new NotFoundException(
-					Response.status(404).entity("{\"error\":\"Vehicle with id: " + id + " not found\"}").build());
-		}
 
 		ObjectMapper om = new ObjectMapper();
 
@@ -73,43 +69,15 @@ public class VehicleService {
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Response createVehicleForPerson(PersonVehicleMapper pvm) {
+	public Response createVehicleForPerson(Vehicle vehicle) {
 
-		// RETHINK - pvm is waiting a person object and List<Vehicle> vehicles list
-		/**
-		 * example: { "person": { "personId": "2", "firstName": "Adam", "lastName": "Nagy", "email": "some@test.com" },
-		 * "vehicles": [ { "vehicleType": "car", "registrationNumber": "test-plate" } ] }
-		 *
-		 **/
-
-		if (pvm.getVehicles().isEmpty()) {
-			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Vehicle list empty\"}").build());
+		if (vehicle == null) {
+			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Vehicle is null\"}").build()); // should be bad request
 		}
 
-		// must contain vehicle without id
-		// TODO: validate not nullable fields are given
-		// create vehicle w/o id and person, empty person object
-		// create vehicle w/o id with person, Person id must be given
-
-		Vehicle vehicle = pvm.getVehicles().get(0);
-		if (vehicleAlreadyExist(vehicle.getRegistrationNumber())) {
-			throw new WebApplicationException(
-					Response.status(Response.Status.CONFLICT).entity("{\"error\":\"Vehicle with the registration number"
-							+ vehicle.getRegistrationNumber() + " already exists\"}").build());
-		}
-
-		Person person = pvm.getPerson();
-		if (person != null && containsPerson(person)) {
-			vehicle.setPerson(person);
-			vehicle.setAssigneeId(String.valueOf(person.getPersonId()));
-		} else {
-			vehicle.setPerson(null);
-			vehicle.setAssigneeId("");
-		}
+		registrationAlreadyExist(vehicle);
 
 		vehicleDao.createVehicle(vehicle);
-
-		// Check if all necessary vehicle fields are given
 
 		return Response.status(Response.Status.CREATED).entity("{\"message\":\"Vehicle successfully created\"}")
 				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/vehicles/" + vehicle.getVehicleId())
@@ -121,18 +89,14 @@ public class VehicleService {
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response updateVehicle(@PathParam("id") int id, Vehicle vehicle) {
 
-		// TODO: must pass person vehicle mapper (pvm) to be able to update its person (at least id)
-		// TODO: vehicle must save assigned person id
+		validateVehicleExists(id);
 
-		Vehicle veh = vehicleDao.getVehicle(id);
-		if (veh == null) {
-			throw new NotFoundException(
-					Response.status(404).entity("{\"error\":\"Vehicle with id: " + id + " not found\"}").build());
+		if (registrationChanged(vehicle)) {
+			registrationAlreadyExist(vehicle);
 		}
 
 		vehicle.setVehicleId(id);
 
-		// New code
 		Person person;
 
 		/**
@@ -140,7 +104,7 @@ public class VehicleService {
 		 *
 		 * if assignee id is empty -> set person to null
 		 */
-		if (!vehicle.getAssigneeId().equals("")) {
+		if (hasPersonAssigned(vehicle)) {
 			int personId = Integer.parseInt(vehicle.getAssigneeId());
 			person = personDao.getPerson(personId);
 			vehicle.setPerson(person);
@@ -162,11 +126,7 @@ public class VehicleService {
 	@Path("/{id}")
 	public Response deleteVehicle(@PathParam("id") int id) {
 
-		Vehicle veh = vehicleDao.getVehicle(id);
-		if (veh == null) {
-			throw new NotFoundException(
-					Response.status(404).entity("{\"error\":\"Vehicle with id: " + id + " not found\"}").build());
-		}
+		validateVehicleExists(id);
 
 		vehicleDao.deleteVehicle(id);
 
@@ -175,20 +135,36 @@ public class VehicleService {
 				.build();
 	}
 
-	// HELPERS
+	/////////////// HELPERS ///////////////////////////
+
+	private void validateVehicleExists(int id) {
+		Vehicle vehicle = vehicleDao.getVehicle(id);
+		if (vehicle == null) {
+			throw new NotFoundException(
+					Response.status(404).entity("{\"error\":\"Vehicle with id: " + id + " not found\"}").build());
+		}
+	}
+
+	private void registrationAlreadyExist(Vehicle vehicle) {
+		if (vehicleAlreadyExist(vehicle.getRegistrationNumber())) {
+			throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
+					.entity("{\"error\":\"Vehicle with the registration number " + vehicle.getRegistrationNumber()
+							+ " already exists\"}")
+					.build());
+		}
+	}
+
+	private boolean registrationChanged(Vehicle vehicle) {
+		Vehicle oldVehicle = vehicleDao.getVehicle(vehicle.getVehicleId());
+		return !oldVehicle.getRegistrationNumber().equals(vehicle.getRegistrationNumber());
+	}
 
 	private boolean vehicleAlreadyExist(String registrationNumber) {
 		return vehicleDao.getVehicleByRegistrationNumber(registrationNumber) != null;
 	}
 
-	private boolean containsPerson(Person person) {
-		List<Person> persons = personDao.getPersons();
-		for (Person p : persons) {
-			if (p.getPersonId() == person.getPersonId()) {
-				return true;
-			}
-		}
-		return false;
+	private boolean hasPersonAssigned(Vehicle v) {
+		return !v.getAssigneeId().equals("");
 	}
 
 }
