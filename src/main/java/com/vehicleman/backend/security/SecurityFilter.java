@@ -7,13 +7,14 @@ import java.util.StringTokenizer;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 
 import org.glassfish.jersey.internal.util.Base64;
 
 import com.vehicleman.backend.dao.ManagerDAO;
 import com.vehicleman.backend.entities.Manager;
 
-//@Provider
+@Provider
 public class SecurityFilter implements ContainerRequestFilter {
 
 	private static final String AUTHORIZATION_HEADER_KEY = "Authorization";

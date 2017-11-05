@@ -51,6 +51,8 @@ public class PersonService {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
+
+		// should be bad request or malformed
 		return Response.ok().build();
 	}
 
@@ -74,6 +76,7 @@ public class PersonService {
 			e.printStackTrace();
 		}
 
+		// should be bad request?
 		return Response.ok().entity(person).build();
 	}
 
@@ -86,13 +89,8 @@ public class PersonService {
 
 		person = personDao.createPerson(person);
 
-		// we dont know the personId yet
-
 		if (personHasVehicle(person)) {
 			setVehicleForPerson(person);
-			// THROWS org.hibernate.transientObjectException when creating person with vehicle
-			// Error during managed flush [object references an unsaved transient instance - save the transient instance before flushing: com.vehicleman.backend.entities.Person]
-			// but still works
 		}
 
 		return Response.status(Response.Status.CREATED).entity("{\"message\":\"Person created successfully\"}")
@@ -107,12 +105,12 @@ public class PersonService {
 		Person per = personDao.getPerson(id);
 		validatePerson(per);
 
+		person.setPersonId(id);
+
 		// if user updated email
 		if (emailChanged(person)) {
 			personWithEmailAlreadyExist(person);
 		}
-
-		person.setPersonId(id);
 
 		// always check if person had vehicle before update
 		Person personBeforeUpdate = personDao.getPerson(id);

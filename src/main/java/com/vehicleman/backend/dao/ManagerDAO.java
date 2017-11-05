@@ -10,6 +10,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import com.vehicleman.backend.entities.Manager;
 import com.vehicleman.backend.entities.Person;
+import com.vehicleman.backend.entities.Vehicle;
 import com.vehicleman.backend.util.HibernateUtil;
 
 public class ManagerDAO {
@@ -75,6 +76,34 @@ public class ManagerDAO {
 		}
 
 		return persons;
+	}
+
+	public List<Vehicle> getManagerVehicles(int id) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = null;
+		List<Vehicle> vehicles = new ArrayList<>();
+
+		try {
+			transaction = session.beginTransaction();
+
+			Query query = session.getNamedQuery("Manager.get_Manager_Vehicles").setParameter("id", id);
+			vehicles = query.list();
+
+			transaction.commit();
+
+		} catch (Exception e) {
+			if (session != null) {
+				transaction.rollback();
+				e.printStackTrace();
+			}
+
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+
+		return vehicles;
 	}
 
 	public Manager getManager(int id) {
@@ -145,7 +174,7 @@ public class ManagerDAO {
 		return null;
 	}
 
-	public void createManager(Manager manager) {
+	public Manager createManager(Manager manager) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = null;
 
@@ -166,9 +195,7 @@ public class ManagerDAO {
 			}
 		}
 
-		// handle MySQLIntegrityConstraintViolationException - > create entity
-		// with same key (if key will be auto generated, then it is not
-		// necessary to be given explicitly)
+		return manager;
 	}
 
 	public void updateManager(Manager manager) {

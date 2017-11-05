@@ -3,15 +3,19 @@ package com.vehicleman.backend.services;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.jersey.internal.util.Base64;
 import org.mindrot.jbcrypt.BCrypt;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vehicleman.backend.dao.ManagerDAO;
 import com.vehicleman.backend.entities.Manager;
 
@@ -21,11 +25,22 @@ public class AuthService {
 	protected ManagerDAO managerDao = new ManagerDAO();
 
 	@GET
-	@Path("/login")
+	@Path("/login/{email}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Response login() {
+	public Response login(@PathParam("email") String email) {
 
-		return Response.status(Response.Status.OK).build();
+		// this manager can not be null
+		Manager manager = managerDao.findManagerByEmail(email);
+
+		ObjectMapper om = new ObjectMapper();
+
+		try {
+			return Response.ok().entity(om.writeValueAsString(manager)).build();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+		return Response.status(Status.BAD_REQUEST).build();
 	}
 
 	@POST
@@ -39,9 +54,9 @@ public class AuthService {
 		}
 
 		manager.setPassword(BCrypt.hashpw(manager.getPassword(), BCrypt.gensalt()));
-		managerDao.createManager(manager);
+		manager = managerDao.createManager(manager);
 
-		return Response.status(201).entity("{\"message\":\"Manager has been created successfully\"}")
+		return Response.status(201).entity(manager)
 				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/managers/" + manager.getManagerId())
 				.build();
 	}

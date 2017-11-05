@@ -20,7 +20,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 		@NamedQuery(name = "Manager.get_All", query = "from Manager m"),
 		@NamedQuery(name = "Manager.get_Manager_By_Id", query = "from Manager m where m.managerId = :id"),
 		@NamedQuery(name = "Manager.get_Manager_By_Email", query = "from Manager m where m.email = :email"),
-		@NamedQuery(name = "Manager.get_Manager_Persons", query = "from Person p where p.managerId = :id") // ask dudi how to get objects related to this manager
+		@NamedQuery(name = "Manager.get_Manager_Persons", query = "from Person p where p.managerId = :id"),
+		@NamedQuery(name = "Manager.get_Manager_Vehicles", query = "from Vehicle v where v.managerId = :id")
 
 })
 

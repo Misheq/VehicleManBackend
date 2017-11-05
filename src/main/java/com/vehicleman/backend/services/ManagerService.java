@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vehicleman.backend.dao.ManagerDAO;
 import com.vehicleman.backend.entities.Manager;
 import com.vehicleman.backend.entities.Person;
+import com.vehicleman.backend.entities.Vehicle;
 
 import io.swagger.annotations.Api;
 
@@ -70,6 +71,8 @@ public class ManagerService {
 					.entity("{\"message\":\"Manager with id " + id + " does not exist\"}").build();
 		}
 
+		/// ???
+
 		String email = securityContext.getUserPrincipal().getName();
 
 		if (!manager.getEmail().equals(email)) {
@@ -81,6 +84,36 @@ public class ManagerService {
 
 		try {
 			response = Response.ok().entity(new ObjectMapper().writeValueAsString(persons)).build();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+		return response;
+	}
+
+	@GET
+	@Path("/{id}/vehicles")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Response getManagerVehicles(@PathParam("id") int id) {
+
+		Manager manager = managerDao.getManager(id);
+
+		if (manager == null) {
+			return Response.status(Status.BAD_REQUEST)
+					.entity("{\"message\":\"Manager with id " + id + " does not exist\"}").build();
+		}
+
+		String email = securityContext.getUserPrincipal().getName();
+
+		if (!manager.getEmail().equals(email)) {
+			return Response.status(Status.FORBIDDEN).entity("{\"message\":\"Access forbidden\"}").build();
+		}
+
+		List<Vehicle> vehicles = managerDao.getManagerVehicles(id);
+		Response response = Response.status(Status.INTERNAL_SERVER_ERROR).build();
+
+		try {
+			response = Response.ok().entity(new ObjectMapper().writeValueAsString(vehicles)).build();
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

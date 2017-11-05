@@ -42,6 +42,9 @@ public class Vehicle implements Serializable {
 	@Column(name = "reg_no", unique = true, nullable = false)
 	private String registrationNumber;
 
+	@Column(name = "manager_id", nullable = false)
+	private int managerId;
+
 	// string value because default value would be 0 instead of ""
 	@Column(name = "assignee_id")
 	private String assigneeId = "";
@@ -78,6 +81,14 @@ public class Vehicle implements Serializable {
 
 	public void setRegistrationNumber(String registrationNumber) {
 		this.registrationNumber = registrationNumber;
+	}
+
+	public int getManagerId() {
+		return managerId;
+	}
+
+	public void setManagerId(int managerId) {
+		this.managerId = managerId;
 	}
 
 	public String getAssigneeId() {
