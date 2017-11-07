@@ -49,14 +49,9 @@ public class ManagerService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getManager(@PathParam("id") int id) {
 
-		Manager mgr = managerDao.getManager(id);
+		Manager manager = checkIfManagerExists(id);
 
-		if (mgr == null) {
-			throw new NotFoundException(
-					Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found\"}").build());
-		}
-
-		return Response.ok(mgr).build();
+		return Response.ok(manager).build();
 	}
 
 	@GET
@@ -64,14 +59,7 @@ public class ManagerService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getManagerPersons(@PathParam("id") int id) {
 
-		Manager manager = managerDao.getManager(id);
-
-		if (manager == null) {
-			return Response.status(Status.BAD_REQUEST)
-					.entity("{\"message\":\"Manager with id " + id + " does not exist\"}").build();
-		}
-
-		/// ???
+		Manager manager = checkIfManagerExists(id);
 
 		String email = securityContext.getUserPrincipal().getName();
 
@@ -96,12 +84,7 @@ public class ManagerService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getManagerVehicles(@PathParam("id") int id) {
 
-		Manager manager = managerDao.getManager(id);
-
-		if (manager == null) {
-			return Response.status(Status.BAD_REQUEST)
-					.entity("{\"message\":\"Manager with id " + id + " does not exist\"}").build();
-		}
+		Manager manager = checkIfManagerExists(id);
 
 		String email = securityContext.getUserPrincipal().getName();
 
@@ -127,16 +110,8 @@ public class ManagerService {
 	public Response updateManager(@PathParam("id") int id, Manager manager) {
 
 		// checks if manager with id exists
-		Manager mgr = managerDao.getManager(id);
+		checkIfManagerExists(id);
 
-		if (mgr == null) {
-			throw new NotFoundException(
-					Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found\"}").build());
-		}
-
-		// TODO: check if required fields are given
-		// TODO: check if valid fields are given
-		// TODO: handle to update only fields that are updated
 		manager.setManagerId(id);
 		managerDao.updateManager(manager);
 
@@ -150,17 +125,24 @@ public class ManagerService {
 	public Response deleteManager(@PathParam("id") int id) {
 
 		// checks if manager with id exists
-		Manager mgr = managerDao.getManager(id);
-
-		if (mgr == null) {
-			throw new NotFoundException(
-					Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found\"}").build());
-		}
+		checkIfManagerExists(id);
 
 		managerDao.deleteManager(id);
 
 		return Response.noContent().entity("{\"message\":\"Manager with id: " + id + " deleted successfully\"}")
 				.build();
+	}
+
+	private Manager checkIfManagerExists(int id) {
+
+		Manager manager = managerDao.getManager(id);
+
+		if (manager == null) {
+			throw new NotFoundException(
+					Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found\"}").build());
+		}
+
+		return manager;
 	}
 
 }

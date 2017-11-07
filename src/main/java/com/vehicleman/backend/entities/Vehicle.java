@@ -45,6 +45,15 @@ public class Vehicle implements Serializable {
 	@Column(name = "manager_id", nullable = false)
 	private int managerId;
 
+	@Column(name = "color", nullable = true)
+	private String color;
+
+	@Column(name = "description", nullable = true)
+	private String description;
+
+	@Column(name = "servicing_date")
+	private String servicingDate;
+
 	// string value because default value would be 0 instead of ""
 	@Column(name = "assignee_id")
 	private String assigneeId = "";
@@ -97,6 +106,30 @@ public class Vehicle implements Serializable {
 
 	public void setAssigneeId(String assigneeId) {
 		this.assigneeId = assigneeId;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getServicingDate() {
+		return servicingDate;
+	}
+
+	public void setServicingDate(String servicingDate) {
+		this.servicingDate = servicingDate;
 	}
 
 	public Person getPerson() {
