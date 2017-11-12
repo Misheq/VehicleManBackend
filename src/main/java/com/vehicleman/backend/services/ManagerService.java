@@ -24,10 +24,10 @@ import com.vehicleman.backend.entities.Manager;
 import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
 
-import io.swagger.annotations.Api;
+// import io.swagger.annotations.Api;
 
 @Path("managers")
-@Api(value = "Managers")
+// @Api(value = "Managers")
 public class ManagerService {
 
 	protected ManagerDAO managerDao = new ManagerDAO();
@@ -110,9 +110,12 @@ public class ManagerService {
 	public Response updateManager(@PathParam("id") int id, Manager manager) {
 
 		// checks if manager with id exists
-		checkIfManagerExists(id);
+		// TODO: check if email exist
+		// TODO: handle password update
+		Manager oldManager = checkIfManagerExists(id);
 
 		manager.setManagerId(id);
+		manager.setPassword(oldManager.getPassword());
 		managerDao.updateManager(manager);
 
 		return Response.ok().entity("{\"message\":\"Manager with id: " + id + " has been updated successfully\"}")
@@ -132,6 +135,8 @@ public class ManagerService {
 		return Response.noContent().entity("{\"message\":\"Manager with id: " + id + " deleted successfully\"}")
 				.build();
 	}
+
+	/////////// helpers /////////////////
 
 	private Manager checkIfManagerExists(int id) {
 

@@ -23,10 +23,10 @@ import com.vehicleman.backend.dao.VehicleDAO;
 import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
 
-import io.swagger.annotations.Api;
+//import io.swagger.annotations.Api;
 
 @Path("vehicles")
-@Api(value = "Vehicles")
+//@Api(value = "Vehicles")
 public class VehicleService {
 
 	protected VehicleDAO vehicleDao = new VehicleDAO();

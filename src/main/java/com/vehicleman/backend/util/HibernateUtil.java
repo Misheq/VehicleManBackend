@@ -10,23 +10,12 @@ public class HibernateUtil {
 	private static SessionFactory buildSessionFactory() {
 		try {
 
-			SessionFactory sessionFactory = new Configuration().configure("\\com\\vehicleman\\backend\\util\\hibernate.cfg.xml").buildSessionFactory();
+			SessionFactory sessionFactory = new Configuration()
+					.configure("/com/vehicleman/backend/util/hibernate.cfg.xml").buildSessionFactory();
 
 			return sessionFactory;
 
-			//			Configuration configuration = new Configuration();
-			//			configuration.configure("\\com\\vehicleman\\backend\\util\\hibernate.cfg.xml");
-			//			System.out.println("Hibernate annotation configuration loaded");
-			//
-			//			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-			//
-			//			System.out.println("Hibernate Annotation serviceRegistry created");
-			//
-			//			SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-			//
-			//			return sessionFactory;
-
-		} catch(Throwable ex) {
+		} catch (Throwable ex) {
 
 			System.err.println("Initial SessionFactory creation failed." + ex);
 			throw new ExceptionInInitializerError(ex);

@@ -29,9 +29,5 @@
     	<li>PUT: /persons/id</li>
     	<li>DELETE: /persons/id</li>
     </ul>
-    <ul>
-    	<li>Mapper related endpoints</li>
-    	<li>POST: /mapper/assign</li>
-    </ul>
 </body>
 </html>
