@@ -46,15 +46,14 @@ public class Vehicle implements Serializable {
 	private int managerId;
 
 	@Column(name = "color", nullable = true)
-	private String color;
+	private String color = "";
 
 	@Column(name = "description", nullable = true)
-	private String description;
+	private String description = "";
 
 	@Column(name = "servicing_date")
-	private String servicingDate;
+	private String servicingDate = "";
 
-	// string value because default value would be 0 instead of ""
 	@Column(name = "assignee_id")
 	private String assigneeId = "";
 
@@ -186,12 +185,9 @@ public class Vehicle implements Serializable {
 	}
 
 	// planned
-	// String color;
 	// String brand;
 	// String model;
-	// String company;
 	// Date dateOfLastCheck;
-	// Date dateOfNextCheck;
 	// Date dateOfAquirement;
 	// Date registrationDate;
 	// Date registrationExpirationDate;

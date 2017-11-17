@@ -3,38 +3,44 @@
 "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
-   <session-factory>
-   <!-- Database connection settings -->
-   <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-   
-   <!-- localhost -->
-   		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/vehiclemandb</property>
-   		<property name="hibernate.connection.username">root</property>
-   		<property name="hibernate.connection.password">DEMO</property>
-   
-   <!--
-   <!- remote mysql server ->
-   <property name="hibernate.connection.url">jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11204423</property>
-   <property name="hibernate.connection.username">sql11204423</property>
-   <property name="hibernate.connection.password">mGuJP3Dd8Z</property>
-   -->
-   
-   <!-- JDBC connetion pool 
-   <property name="connection.pool_size">1</property> -->
-   
-   <!-- SQL dialect -->
-   <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-   
-   <!-- Echo all executed SQL to stdout -->
- 	<property name="show_sql">true</property>
- 	
-   <!-- Update database shema , write back to update-->
-  	<property name="hbm2ddl.auto">update</property>
-  	
-   <!-- List of XML mapping files -->
-   <mapping class="com.vehicleman.backend.entities.Manager"/>
-   <mapping class="com.vehicleman.backend.entities.Vehicle"/>
-   <mapping class="com.vehicleman.backend.entities.Person"/>
+	<session-factory>
+		<!-- Database connection settings -->
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
 
-</session-factory>
+		<!-- localhost 
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/vehiclemandb</property> 
+			<property name="hibernate.connection.username">root</property> <property 
+			name="hibernate.connection.password">DEMO</property>
+			--> 
+
+		<!-- remote mysql server -->
+		<property name="hibernate.connection.url">jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11204423?autoReconnect=true</property>
+		<property name="hibernate.connection.username">sql11204423</property>
+		<property name="hibernate.connection.password">mGuJP3Dd8Z</property>
+		
+		<property name="connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+		<property name="hibernate.c3p0.acquire_increment">1</property>
+		<property name="hibernate.c3p0.idle_test_period">100</property>
+		<property name="hibernate.c3p0.max_size">100</property>
+		<property name="hibernate.c3p0.max_statements">100</property>
+		<property name="hibernate.c3p0.min_size">10</property>
+		<property name="hibernate.c3p0.timeout">180</property>
+
+		<!-- JDBC connetion pool <property name="connection.pool_size">1</property> -->
+
+		<!-- SQL dialect -->
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+
+		<!-- Echo all executed SQL to stdout -->
+		<property name="show_sql">true</property>
+
+		<!-- Update database shema , write back to update -->
+		<property name="hbm2ddl.auto">update</property>
+
+		<!-- List of XML mapping files -->
+		<mapping class="com.vehicleman.backend.entities.Manager" />
+		<mapping class="com.vehicleman.backend.entities.Vehicle" />
+		<mapping class="com.vehicleman.backend.entities.Person" />
+
+	</session-factory>
 </hibernate-configuration>
