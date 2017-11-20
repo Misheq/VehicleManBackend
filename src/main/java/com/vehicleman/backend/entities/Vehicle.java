@@ -33,7 +33,7 @@ public class Vehicle implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO) //(generator = "uuid")
 	//	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(name = "vehicle_id", length = 45, unique = true, nullable = false)
+	@Column(name = "vehicle_id", unique = true, nullable = false)
 	private int vehicleId;
 
 	@Column(name = "vehicle_type", nullable = false)
@@ -183,20 +183,4 @@ public class Vehicle implements Serializable {
 		}
 		return true;
 	}
-
-	// planned
-	// String brand;
-	// String model;
-	// Date dateOfLastCheck;
-	// Date dateOfAquirement;
-	// Date registrationDate;
-	// Date registrationExpirationDate;
-
-	// very optional
-	// int totalDistance;
-	// int height;
-	// int width;
-	// int length;
-	// int weight;
-	// List<BufferedImage> pictures;
 }

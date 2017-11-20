@@ -1,4 +1,4 @@
-package com.vehicleman.backend.util;
+package com.vehicleman.backend.utils;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

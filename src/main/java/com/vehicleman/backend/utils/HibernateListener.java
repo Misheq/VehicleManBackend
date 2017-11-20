@@ -1,4 +1,4 @@
-package com.vehicleman.backend.util;
+package com.vehicleman.backend.utils;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

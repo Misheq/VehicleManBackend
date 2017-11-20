@@ -33,7 +33,7 @@ public class Manager implements Serializable, Principal {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO) //(generator = "uuid")
 	//	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(name = "manager_id", length = 45, unique = true, nullable = false)
+	@Column(name = "manager_id", unique = true, nullable = false)
 	private int managerId;
 
 	@Column(name = "first_name", nullable = false)

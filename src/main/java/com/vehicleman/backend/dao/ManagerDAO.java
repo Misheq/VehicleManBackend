@@ -11,7 +11,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import com.vehicleman.backend.entities.Manager;
 import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
-import com.vehicleman.backend.util.HibernateUtil;
+import com.vehicleman.backend.utils.HibernateUtil;
 
 public class ManagerDAO {
 

@@ -7,7 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.vehicleman.backend.entities.Vehicle;
-import com.vehicleman.backend.util.HibernateUtil;
+import com.vehicleman.backend.utils.HibernateUtil;
 
 public class VehicleDAO {
 

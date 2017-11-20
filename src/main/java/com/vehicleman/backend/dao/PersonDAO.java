@@ -7,7 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.vehicleman.backend.entities.Person;
-import com.vehicleman.backend.util.HibernateUtil;
+import com.vehicleman.backend.utils.HibernateUtil;
 
 public class PersonDAO {
 
