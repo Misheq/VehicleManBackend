@@ -22,7 +22,7 @@ public class VehicleITests extends BaseITest {
 
 	@Test
 	public void getVehicleById() {
-		given().when().get("/5").then().statusCode(200);
+		given().when().get("/176").then().statusCode(200);
 	}
 
 	@Test

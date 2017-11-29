@@ -38,6 +38,6 @@
 	</servlet-mapping>
 
 	<listener>
-		<listener-class>com.vehicleman.backend.util.HibernateListener</listener-class>
+		<listener-class>com.vehicleman.backend.utils.HibernateListener</listener-class>
 	</listener>
 </web-app>

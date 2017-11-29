@@ -11,7 +11,7 @@ public class HibernateUtil {
 		try {
 
 			SessionFactory sessionFactory = new Configuration()
-					.configure("/com/vehicleman/backend/util/hibernate.cfg.xml").buildSessionFactory();
+					.configure("/com/vehicleman/backend/utils/hibernate.cfg.xml").buildSessionFactory();
 
 			return sessionFactory;
 

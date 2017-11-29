@@ -23,7 +23,7 @@ public class PersonITests extends BaseITest {
 
 	@Test
 	public void getPersonById() {
-		given().when().get("/4").then().statusCode(200);
+		given().when().get("/172").then().statusCode(200);
 	}
 
 	@Test

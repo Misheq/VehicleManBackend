@@ -57,7 +57,7 @@ public class AuthService {
 		manager = managerDao.createManager(manager);
 
 		return Response.status(201).entity(manager)
-				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/managers/" + manager.getManagerId())
+				.header(HttpHeaders.LOCATION, "http://localhost:8081/vehicleman/api/managers/" + manager.getManagerId())
 				.build();
 	}
 
