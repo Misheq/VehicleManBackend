@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.Entity;
@@ -25,7 +26,7 @@ public class PersonPutTests extends PersonTestBase {
 
 		Response response = target("persons/" + id).request().put(Entity.entity(person, MediaType.APPLICATION_JSON));
 
-		verify(personDaoMock).getPerson(id);
+		verify(personDaoMock, times(3)).getPerson(id);
 		verify(personDaoMock).updatePerson(person);
 
 		System.out.println(response.readEntity(String.class));

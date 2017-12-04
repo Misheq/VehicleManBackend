@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 
 import java.util.ArrayList;
 
@@ -69,7 +70,7 @@ public class VehicleGetTests extends VehicleTestBase {
 
 		Response response = target("vehicles/" + id).request().get();
 
-		verify(vehicleDaoMock).getVehicle(id);
+		verify(vehicleDaoMock, times(2)).getVehicle(id);
 
 		System.out.println(response.readEntity(String.class));
 		assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());

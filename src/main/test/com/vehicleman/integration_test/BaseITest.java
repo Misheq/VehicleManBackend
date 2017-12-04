@@ -14,13 +14,16 @@ import com.vehicleman.backend.entities.Vehicle;
 public class BaseITest {
 
 	public static String basePath;
-	public static final String REGISTER_PATH = "http://localhost:8081/vehicleman/api/auth/register";
+	public static final int PORT = 8081;
+	public static final String REGISTER_PATH = "http://localhost:" + PORT + "/vehicleman/api/auth/register";
+	public static final String USERNAME = "mihael@sap.com";
+	public static final String PASSWORD = "asdasd";
 
 	@BeforeClass
 	public static void init() {
 		RestAssured.baseURI = "http://localhost";
-		RestAssured.port = 8081;
-		RestAssured.authentication = RestAssured.preemptive().basic("mihael@sap.com", "asdasd");
+		RestAssured.port = PORT;
+		RestAssured.authentication = RestAssured.preemptive().basic(USERNAME, PASSWORD);
 		basePath = "/vehicleman/api";
 	}
 
@@ -46,10 +49,10 @@ public class BaseITest {
 		Manager m = new Manager();
 		m.setFirstName("MFN");
 		m.setLastName("MLN");
-		m.setEmail("aasda@email.com");
+		m.setEmail("newuser242@gmail.com");
 		m.setPhone("+36 1 123 123");
-		m.setPassword("asdasd");
 		m.setCompanyName("HelloCity Ltd.");
+		m.setPassword("password");
 
 		return m;
 	}
@@ -62,19 +65,10 @@ public class BaseITest {
 
 	// updates the resource and returns the location header
 	public String updateResource(String resourceId, Object bodyPayload) {
+		System.out.println("resource Id " + resourceId);
 		return given().contentType("application/json").body(bodyPayload).when().put(resourceId).then().statusCode(200)
 				.extract().header(HttpHeaders.LOCATION);
 	}
-
-	//	public String updateResource(String resourceId, Object bodyPayload, Manager m) {
-	//		//		return given().auth().preemptive().basic(m.getEmail(), m.getPassword()).contentType("application/json")
-	//		//				.body(bodyPayload).when().put(resourceId).then().statusCode(200).extract().header(HttpHeaders.LOCATION);
-	//
-	//		//		return given().auth().preemptive().basic(m.getEmail(), m.getPassword()).contentType("application/json")
-	//		//				.body(bodyPayload).when().put("http://localhost:8081/vehicleman/api/managers" + resourceId).then()
-	//		//				.statusCode(200).extract().header(HttpHeaders.LOCATION);
-	//
-	//	}
 
 	// checks if the resource exists and returns the object
 	public <T> T getResource(String locationHeader, Class<T> responseClass) {

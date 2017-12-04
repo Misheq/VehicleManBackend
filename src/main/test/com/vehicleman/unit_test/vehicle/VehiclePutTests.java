@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.Entity;
@@ -24,12 +25,13 @@ public class VehiclePutTests extends VehicleTestBase {
 
 		Vehicle vehicle = new Vehicle();
 		vehicle.setVehicleId(id);
+		vehicle.setRegistrationNumber("REG-NUM");
 
 		when(vehicleDaoMock.getVehicle(id)).thenReturn(vehicle);
 
 		Response response = target(ENDPOINT + id).request().put(Entity.entity(vehicle, MediaType.APPLICATION_JSON));
 
-		verify(vehicleDaoMock).getVehicle(id);
+		verify(vehicleDaoMock, times(2)).getVehicle(id);
 		verify(vehicleDaoMock).updateVehicle(vehicle);
 
 		System.out.println(response.readEntity(String.class));

@@ -73,7 +73,7 @@ public class PersonDeleteTests extends PersonTestBase {
 
 		verify(personDaoMock).getPerson(id);
 		verify(personDaoMock).deletePerson(id);
-		verify(vehicleDaoMock, times(2)).updateVehicle(any(Vehicle.class));
+		verify(vehicleDaoMock).updateVehicle(any(Vehicle.class));
 
 		assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
 	}

@@ -119,7 +119,7 @@ public class ManagerService {
 		managerDao.updateManager(manager);
 
 		return Response.ok().entity("{\"message\":\"Manager with id: " + id + " has been updated successfully\"}")
-				.header(HttpHeaders.LOCATION, "http://localhost:8081/vehicleman/api/managers" + manager.getManagerId())
+				.header(HttpHeaders.LOCATION, "http://localhost:8081/vehicleman/api/managers/" + manager.getManagerId())
 				.build();
 	}
 
