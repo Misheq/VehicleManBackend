@@ -20,12 +20,15 @@ public class SecurityFilter implements ContainerRequestFilter {
 	private static final String AUTHORIZATION_HEADER_KEY = "Authorization";
 	private static final String AUTHORIZATION_HEADER_PREFIX = "Basic ";
 	private static final String SECURED_URL_PREFIX = "auth/register";
+	private static final String SWAGGER_SUFFIX = "swagger.json";
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 
 		//		 if you want to secure specific endpoints
-		if (!requestContext.getUriInfo().getPath().contains(SECURED_URL_PREFIX)) {
+		final String path = requestContext.getUriInfo().getPath();
+
+		if (!path.contains(SECURED_URL_PREFIX) && !path.endsWith(SWAGGER_SUFFIX)) {
 
 			List<String> authHeader = requestContext.getHeaders().get(AUTHORIZATION_HEADER_KEY);
 

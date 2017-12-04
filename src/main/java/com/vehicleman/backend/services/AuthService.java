@@ -11,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.glassfish.jersey.internal.util.Base64;
 import org.mindrot.jbcrypt.BCrypt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,7 +18,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vehicleman.backend.dao.ManagerDAO;
 import com.vehicleman.backend.entities.Manager;
 
+import io.swagger.annotations.Api;
+
 @Path("auth")
+@Api("Public")
 public class AuthService {
 
 	protected ManagerDAO managerDao = new ManagerDAO();
@@ -66,14 +68,4 @@ public class AuthService {
 		return managerDao.findManagerByEmail(email) != null;
 	}
 
-	private String authToken(Manager manager) {
-
-		String email = manager.getEmail();
-		String password = manager.getPassword();
-
-		String token = email + ":" + password;
-		String authToken = Base64.encodeAsString(token);
-
-		return authToken;
-	}
 }

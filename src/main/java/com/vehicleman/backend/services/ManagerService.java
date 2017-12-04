@@ -24,10 +24,10 @@ import com.vehicleman.backend.entities.Manager;
 import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
 
-// import io.swagger.annotations.Api;
+import io.swagger.annotations.Api;
 
 @Path("managers")
-// @Api(value = "Managers")
+@Api(value = "Managers")
 public class ManagerService {
 
 	protected ManagerDAO managerDao = new ManagerDAO();
