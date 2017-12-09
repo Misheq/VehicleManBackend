@@ -95,7 +95,7 @@ public class PersonService {
 		}
 
 		return Response.status(Response.Status.CREATED).entity("{\"message\":\"Person created successfully\"}")
-				.header(HttpHeaders.LOCATION, ApiConstants.BASE_URL + "persons/").build();
+				.header(HttpHeaders.LOCATION, ApiConstants.BASE_URL + "persons/" + person.getPersonId()).build();
 	}
 
 	@PUT

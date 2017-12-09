@@ -31,7 +31,7 @@ public class BaseITest {
 		Person p = new Person();
 		p.setFirstName("fn");
 		p.setLastName("ln");
-		p.setEmail("a@a.aa");
+		p.setEmail("test_person018@testmail.com");
 		p.setCompanyName("c");
 		p.setPhone("+36123456789");
 		return p;
@@ -40,7 +40,7 @@ public class BaseITest {
 	// should always contain an non existing vehicle (different reg.no.)
 	public Vehicle dummyVehicle() {
 		Vehicle v = new Vehicle();
-		v.setRegistrationNumber("BME-555312-FG");
+		v.setRegistrationNumber("BME-555325-SG");
 		v.setVehicleType("car");
 		return v;
 	}
@@ -49,17 +49,22 @@ public class BaseITest {
 		Manager m = new Manager();
 		m.setFirstName("MFN");
 		m.setLastName("MLN");
-		m.setEmail("newuser242@gmail.com");
+		m.setEmail("test_manager_001@sap.com");
 		m.setPhone("+36 1 123 123");
 		m.setCompanyName("HelloCity Ltd.");
-		m.setPassword("password");
+		m.setPassword("asdasd");
 
 		return m;
 	}
 
 	// creates a new resources and returns the location header
 	public String createResource(Object bodyPayload) {
-		return given().contentType("application/json").body(bodyPayload).when().post(REGISTER_PATH).then()
+		// "" means default RestAssured basePath
+		return createResource(bodyPayload, "");
+	}
+
+	public String createResource(Object bodyPayload, String registerEndpoint) {
+		return given().contentType("application/json").body(bodyPayload).when().post(registerEndpoint).then()
 				.statusCode(201).extract().header(HttpHeaders.LOCATION);
 	}
 

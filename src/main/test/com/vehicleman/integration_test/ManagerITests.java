@@ -10,10 +10,11 @@ import com.vehicleman.backend.entities.Manager;
 
 public class ManagerITests extends BaseITest {
 
-	public static String managerId;
+	private static final String ENDPOINT = "/managers";
+	private static String managerId;
 
 	public ManagerITests() {
-		RestAssured.basePath = basePath + "/managers";
+		RestAssured.basePath = basePath + ENDPOINT;
 	}
 
 	// GET
@@ -41,20 +42,19 @@ public class ManagerITests extends BaseITest {
 		deleteManager();
 	}
 
-	public void createManager() {
+	private void createManager() {
 		Manager manager = dummyManager();
-		String locationHeader = createResource(manager);
+		String locationHeader = createResource(manager, REGISTER_PATH);
 		Manager m = getResource(locationHeader, Manager.class);
 		managerId = "/" + m.getManagerId();
 		assertEquals(m.getEmail(), manager.getEmail());
 	}
 
-	public void createManagerConflict() {
+	private void createManagerConflict() {
 		given().contentType("application/json").body(dummyManager()).when().post(REGISTER_PATH).then().statusCode(409);
 	}
 
-	public void updateManager() {
-
+	private void updateManager() {
 		Manager manager = dummyManager();
 
 		manager.setFirstName(manager.getFirstName() + " updated");
@@ -71,7 +71,7 @@ public class ManagerITests extends BaseITest {
 		assertEquals(resultManager.getPhone().contains("updated"), true);
 	}
 
-	public void deleteManager() {
+	private void deleteManager() {
 		deleteResource(managerId);
 		checkResourceNotFound(managerId);
 	}
