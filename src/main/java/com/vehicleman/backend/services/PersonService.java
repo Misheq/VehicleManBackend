@@ -22,6 +22,7 @@ import com.vehicleman.backend.dao.PersonDAO;
 import com.vehicleman.backend.dao.VehicleDAO;
 import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
+import com.vehicleman.backend.utils.ApiConstants;
 
 import io.swagger.annotations.Api;
 
@@ -94,7 +95,7 @@ public class PersonService {
 		}
 
 		return Response.status(Response.Status.CREATED).entity("{\"message\":\"Person created successfully\"}")
-				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/persons/").build();
+				.header(HttpHeaders.LOCATION, ApiConstants.BASE_URL + "persons/").build();
 	}
 
 	@PUT
@@ -125,7 +126,7 @@ public class PersonService {
 		personDao.updatePerson(person);
 
 		return Response.ok().entity("{\"message\":\"Person with id: " + id + " updated successfully\"}")
-				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/persons/" + id).build();
+				.header(HttpHeaders.LOCATION, ApiConstants.BASE_URL + "persons/" + id).build();
 	}
 
 	@DELETE

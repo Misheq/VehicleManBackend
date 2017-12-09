@@ -24,7 +24,7 @@ public class ManagerITests extends BaseITest {
 
 	@Test
 	public void getManagerById() {
-		given().when().get("/202").then().statusCode(200);
+		given().when().get("/203").then().statusCode(200);
 	}
 
 	@Test

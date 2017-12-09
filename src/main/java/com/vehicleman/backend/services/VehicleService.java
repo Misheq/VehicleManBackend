@@ -22,6 +22,7 @@ import com.vehicleman.backend.dao.PersonDAO;
 import com.vehicleman.backend.dao.VehicleDAO;
 import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
+import com.vehicleman.backend.utils.ApiConstants;
 
 import io.swagger.annotations.Api;
 
@@ -80,8 +81,7 @@ public class VehicleService {
 		vehicleDao.createVehicle(vehicle);
 
 		return Response.status(Response.Status.CREATED).entity("{\"message\":\"Vehicle successfully created\"}")
-				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/vehicles/" + vehicle.getVehicleId())
-				.build();
+				.header(HttpHeaders.LOCATION, ApiConstants.BASE_URL + "vehicles/" + vehicle.getVehicleId()).build();
 	}
 
 	@PUT
@@ -119,7 +119,7 @@ public class VehicleService {
 		vehicleDao.updateVehicle(vehicle);
 
 		return Response.ok().entity("{\"message\":\"Vehicle with id: " + id + " updated successfully\"}")
-				.header(HttpHeaders.LOCATION, "http://localhost:8082/vehicleman/api/vehicles/" + id).build();
+				.header(HttpHeaders.LOCATION, ApiConstants.BASE_URL + "vehicles/" + id).build();
 	}
 
 	@DELETE

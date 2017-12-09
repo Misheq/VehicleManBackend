@@ -10,19 +10,19 @@ import com.jayway.restassured.RestAssured;
 import com.vehicleman.backend.entities.Manager;
 import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
+import com.vehicleman.backend.utils.ApiConstants;
 
 public class BaseITest {
 
 	public static String basePath;
-	public static final int PORT = 8081;
-	public static final String REGISTER_PATH = "http://localhost:" + PORT + "/vehicleman/api/auth/register";
+	public static final String REGISTER_PATH = ApiConstants.BASE_URL + "auth/register";
 	public static final String USERNAME = "mihael@sap.com";
 	public static final String PASSWORD = "asdasd";
 
 	@BeforeClass
 	public static void init() {
 		RestAssured.baseURI = "http://localhost";
-		RestAssured.port = PORT;
+		RestAssured.port = Integer.parseInt(ApiConstants.PORT);
 		RestAssured.authentication = RestAssured.preemptive().basic(USERNAME, PASSWORD);
 		basePath = "/vehicleman/api";
 	}

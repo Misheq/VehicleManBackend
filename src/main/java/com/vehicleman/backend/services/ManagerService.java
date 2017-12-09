@@ -23,6 +23,7 @@ import com.vehicleman.backend.dao.ManagerDAO;
 import com.vehicleman.backend.entities.Manager;
 import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
+import com.vehicleman.backend.utils.ApiConstants;
 
 import io.swagger.annotations.Api;
 
@@ -119,8 +120,7 @@ public class ManagerService {
 		managerDao.updateManager(manager);
 
 		return Response.ok().entity("{\"message\":\"Manager with id: " + id + " has been updated successfully\"}")
-				.header(HttpHeaders.LOCATION, "http://localhost:8081/vehicleman/api/managers/" + manager.getManagerId())
-				.build();
+				.header(HttpHeaders.LOCATION, ApiConstants.BASE_URL + "managers/" + manager.getManagerId()).build();
 	}
 
 	@DELETE
