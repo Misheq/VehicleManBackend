@@ -90,12 +90,11 @@ public class VehicleService {
 	public Response updateVehicle(@PathParam("id") int id, Vehicle vehicle) {
 
 		validateVehicleExists(id);
+		vehicle.setVehicleId(id);
 
 		if (registrationChanged(vehicle)) {
 			registrationAlreadyExist(vehicle);
 		}
-
-		vehicle.setVehicleId(id);
 
 		Person person;
 
