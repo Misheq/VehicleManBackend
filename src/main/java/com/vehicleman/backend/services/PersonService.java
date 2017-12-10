@@ -24,10 +24,8 @@ import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
 import com.vehicleman.backend.utils.ApiConstants;
 
-import io.swagger.annotations.Api;
-
 @Path("persons")
-@Api(value = "Persons")
+//@Api(value = "Persons")
 public class PersonService {
 
 	protected PersonDAO personDao;
@@ -40,21 +38,21 @@ public class PersonService {
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	//	@ApiOperation(value = "Get all persons", notes = "get all persons from the database", response = Person.class, responseContainer = "List")
 	public Response getPersons() {
 
 		List<Person> persons = personDao.getPersons();
 
 		ObjectMapper om = new ObjectMapper();
+		Response response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"error\":\"Server error\"}")
+				.build();
 
 		try {
-			return Response.ok().entity(om.writeValueAsString(persons)).build();
+			response = Response.ok().entity(om.writeValueAsString(persons)).build();
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 
-		// should be bad request or malformed
-		return Response.ok().build();
+		return response;
 	}
 
 	@GET
@@ -66,19 +64,20 @@ public class PersonService {
 
 		if (person == null) {
 			throw new NotFoundException(Response.status(Response.Status.NOT_FOUND)
-					.entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
+					.entity("{\"error\":\"Employee does not exist\"}").build());
 		}
 
 		ObjectMapper om = new ObjectMapper();
+		Response response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"error\":\"Server error\"}")
+				.build();
 
 		try {
-			return Response.ok().entity(om.writeValueAsString(person)).build();
+			response = Response.ok().entity(om.writeValueAsString(person)).build();
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 
-		// should be bad request?
-		return Response.ok().entity(person).build();
+		return response;
 	}
 
 	@POST
@@ -94,7 +93,7 @@ public class PersonService {
 			setVehicleForPerson(person);
 		}
 
-		return Response.status(Response.Status.CREATED).entity("{\"message\":\"Person created successfully\"}")
+		return Response.status(Response.Status.CREATED).entity("{\"message\":\"Employee created successfully\"}")
 				.header(HttpHeaders.LOCATION, ApiConstants.BASE_URL + "persons/" + person.getPersonId()).build();
 	}
 
@@ -108,7 +107,6 @@ public class PersonService {
 
 		person.setPersonId(id);
 
-		// if user updated email
 		if (emailChanged(person)) {
 			personWithEmailAlreadyExist(person);
 		}
@@ -125,7 +123,7 @@ public class PersonService {
 
 		personDao.updatePerson(person);
 
-		return Response.ok().entity("{\"message\":\"Person with id: " + id + " updated successfully\"}")
+		return Response.ok().entity("{\"message\":\"Employee updated successfully\"}")
 				.header(HttpHeaders.LOCATION, ApiConstants.BASE_URL + "persons/" + id).build();
 	}
 
@@ -136,7 +134,7 @@ public class PersonService {
 		Person person = personDao.getPerson(id);
 		if (person == null) {
 			throw new NotFoundException(Response.status(Response.Status.NOT_FOUND)
-					.entity("{\"error\":\"Person with id: " + id + " not found\"}").build());
+					.entity("{\"error\":\"Employee does not exist\"}").build());
 		}
 
 		if (personHasVehicle(person)) {
@@ -145,7 +143,7 @@ public class PersonService {
 
 		personDao.deletePerson(id);
 
-		return Response.noContent().entity("{\"message\":\"Person with id: " + id + " deleted successfully\"}").build();
+		return Response.noContent().entity("{\"message\":\"Employee deleted successfully\"}").build();
 	}
 
 	////////////////////////// HELPERS ///////////////////////////////////////
@@ -153,7 +151,7 @@ public class PersonService {
 	private void personWithEmailAlreadyExist(Person person) {
 		if (personAlreadyExist(person.getEmail())) {
 			throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
-					.entity("{\"error\":\"Person with the email " + person.getEmail() + " already exists\"}").build());
+					.entity("{\"error\":\"Please try another email\"}").build());
 		}
 	}
 
@@ -168,8 +166,8 @@ public class PersonService {
 
 	private void validatePerson(Person person) {
 		if (person == null) {
-			throw new NotFoundException(
-					Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"Person not found\"}").build());
+			throw new NotFoundException(Response.status(Response.Status.NOT_FOUND)
+					.entity("{\"error\":\"Employee does not exist\"}").build());
 		}
 	}
 
@@ -192,5 +190,4 @@ public class PersonService {
 	private boolean personHasVehicle(Person p) {
 		return p.getVehicles().size() != 0;
 	}
-
 }

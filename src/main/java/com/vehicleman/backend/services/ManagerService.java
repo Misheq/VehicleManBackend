@@ -25,10 +25,8 @@ import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
 import com.vehicleman.backend.utils.ApiConstants;
 
-import io.swagger.annotations.Api;
-
 @Path("managers")
-@Api(value = "Managers")
+//@Api(value = "Managers")
 public class ManagerService {
 
 	protected ManagerDAO managerDao = new ManagerDAO();
@@ -65,11 +63,12 @@ public class ManagerService {
 		String email = securityContext.getUserPrincipal().getName();
 
 		if (!manager.getEmail().equals(email)) {
-			return Response.status(Status.FORBIDDEN).entity("{\"message\":\"Access forbidden\"}").build();
+			return Response.status(Status.FORBIDDEN).entity("{\"message\":\"You have no access\"}").build();
 		}
 
 		List<Person> persons = managerDao.getManagerPersons(id);
-		Response response = Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		Response response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+				.entity("{\"error\":\"Server error\"}").build();
 
 		try {
 			response = Response.ok().entity(new ObjectMapper().writeValueAsString(persons)).build();
@@ -90,11 +89,12 @@ public class ManagerService {
 		String email = securityContext.getUserPrincipal().getName();
 
 		if (!manager.getEmail().equals(email)) {
-			return Response.status(Status.FORBIDDEN).entity("{\"message\":\"Access forbidden\"}").build();
+			return Response.status(Status.FORBIDDEN).entity("{\"message\":\"You have no access\"}").build();
 		}
 
 		List<Vehicle> vehicles = managerDao.getManagerVehicles(id);
-		Response response = Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		Response response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+				.entity("{\"error\":\"Server error\"}").build();
 
 		try {
 			response = Response.ok().entity(new ObjectMapper().writeValueAsString(vehicles)).build();
@@ -110,16 +110,13 @@ public class ManagerService {
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response updateManager(@PathParam("id") int id, Manager manager) {
 
-		// checks if manager with id exists
-		// TODO: check if email exist
-		// TODO: handle password update
 		Manager oldManager = checkIfManagerExists(id);
 
 		manager.setManagerId(id);
 		manager.setPassword(oldManager.getPassword());
 		managerDao.updateManager(manager);
 
-		return Response.ok().entity("{\"message\":\"Manager with id: " + id + " has been updated successfully\"}")
+		return Response.ok().entity("{\"message\":\"Manager updated successfully\"}")
 				.header(HttpHeaders.LOCATION, ApiConstants.BASE_URL + "managers/" + manager.getManagerId()).build();
 	}
 
@@ -127,13 +124,10 @@ public class ManagerService {
 	@Path("/{id}")
 	public Response deleteManager(@PathParam("id") int id) {
 
-		// checks if manager with id exists
 		checkIfManagerExists(id);
-
 		managerDao.deleteManager(id);
 
-		return Response.noContent().entity("{\"message\":\"Manager with id: " + id + " deleted successfully\"}")
-				.build();
+		return Response.noContent().entity("{\"message\":\"Manager deleted successfully\"}").build();
 	}
 
 	/////////// helpers /////////////////
@@ -143,11 +137,9 @@ public class ManagerService {
 		Manager manager = managerDao.getManager(id);
 
 		if (manager == null) {
-			throw new NotFoundException(
-					Response.status(404).entity("{\"error\":\"Manager with id: " + id + " not found\"}").build());
+			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Manager does not exist\"}").build());
 		}
 
 		return manager;
 	}
-
 }

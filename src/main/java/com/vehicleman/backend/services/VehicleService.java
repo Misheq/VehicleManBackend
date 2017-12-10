@@ -2,6 +2,7 @@ package com.vehicleman.backend.services;
 
 import java.util.List;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,6 +16,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,10 +26,8 @@ import com.vehicleman.backend.entities.Person;
 import com.vehicleman.backend.entities.Vehicle;
 import com.vehicleman.backend.utils.ApiConstants;
 
-import io.swagger.annotations.Api;
-
 @Path("vehicles")
-@Api(value = "Vehicles")
+//@Api(value = "Vehicles")
 public class VehicleService {
 
 	protected VehicleDAO vehicleDao = new VehicleDAO();
@@ -40,13 +40,16 @@ public class VehicleService {
 		List<Vehicle> vehicles = vehicleDao.getVehicles();
 
 		ObjectMapper om = new ObjectMapper();
+		Response response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+				.entity("{\"error\":\"Server error\"}").build();
 
 		try {
-			return Response.ok().entity(om.writeValueAsString(vehicles)).build();
+			response = Response.ok().entity(om.writeValueAsString(vehicles)).build();
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		return Response.ok().build();
+
+		return response;
 	}
 
 	@GET
@@ -58,22 +61,25 @@ public class VehicleService {
 		Vehicle vehicle = vehicleDao.getVehicle(id);
 
 		ObjectMapper om = new ObjectMapper();
+		Response response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+				.entity("{\"error\":\"Server error\"}").build();
 
 		try {
-			return Response.ok().entity(om.writeValueAsString(vehicle)).build();
+			response = Response.ok().entity(om.writeValueAsString(vehicle)).build();
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 
-		return Response.ok().entity(vehicle).build();
+		return response;
 	}
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Response createVehicleForPerson(Vehicle vehicle) {
+	public Response createVehicle(Vehicle vehicle) {
 
 		if (vehicle == null) {
-			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Vehicle is null\"}").build()); // should be bad request
+			throw new BadRequestException(
+					Response.status(Status.BAD_REQUEST).entity("{\"error\":\"Bad request\"}").build());
 		}
 
 		registrationAlreadyExist(vehicle);
@@ -117,7 +123,7 @@ public class VehicleService {
 
 		vehicleDao.updateVehicle(vehicle);
 
-		return Response.ok().entity("{\"message\":\"Vehicle with id: " + id + " updated successfully\"}")
+		return Response.ok().entity("{\"message\":\"Vehicle updated successfully\"}")
 				.header(HttpHeaders.LOCATION, ApiConstants.BASE_URL + "vehicles/" + id).build();
 	}
 
@@ -130,8 +136,7 @@ public class VehicleService {
 		vehicleDao.deleteVehicle(id);
 
 		// does not print out response :/
-		return Response.status(204).entity("{\"message\":\"Vehicle with id: " + id + " deleted successfully\"}")
-				.build();
+		return Response.status(204).entity("{\"message\":\"Vehicle deleted successfully\"}").build();
 	}
 
 	/////////////// HELPERS ///////////////////////////
@@ -139,17 +144,14 @@ public class VehicleService {
 	private void validateVehicleExists(int id) {
 		Vehicle vehicle = vehicleDao.getVehicle(id);
 		if (vehicle == null) {
-			throw new NotFoundException(
-					Response.status(404).entity("{\"error\":\"Vehicle with id: " + id + " not found\"}").build());
+			throw new NotFoundException(Response.status(404).entity("{\"error\":\"Vehicle does not exist\"}").build());
 		}
 	}
 
 	private void registrationAlreadyExist(Vehicle vehicle) {
 		if (vehicleAlreadyExist(vehicle.getRegistrationNumber())) {
 			throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
-					.entity("{\"error\":\"Vehicle with the registration number " + vehicle.getRegistrationNumber()
-							+ " already exists\"}")
-					.build());
+					.entity("{\"error\":\"Please check registration number\"}").build());
 		}
 	}
 

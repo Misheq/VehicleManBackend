@@ -19,10 +19,8 @@ import com.vehicleman.backend.dao.ManagerDAO;
 import com.vehicleman.backend.entities.Manager;
 import com.vehicleman.backend.utils.ApiConstants;
 
-import io.swagger.annotations.Api;
-
 @Path("auth")
-@Api("Public")
+//@Api("Public")
 public class AuthService {
 
 	protected ManagerDAO managerDao = new ManagerDAO();
@@ -52,8 +50,7 @@ public class AuthService {
 	public Response register(Manager manager) {
 		if (managerAlreadyExists(manager.getEmail())) {
 			throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
-					.entity("{\"error\":\"Manager with the email " + manager.getEmail() + " already exists\"}")
-					.build());
+					.entity("{\"error\":\"Please try another email address\"}").build());
 		}
 
 		manager.setPassword(BCrypt.hashpw(manager.getPassword(), BCrypt.gensalt()));
