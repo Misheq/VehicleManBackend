@@ -44,13 +44,11 @@ public class PersonTestBase extends JerseyTest {
 		vehicleList = new ArrayList<>();
 
 		v1 = new Vehicle();
-		v1.setPerson(person);
 		v1.setRegistrationNumber("ABC-123");
 		v1.setVehicleId(1);
 		v1.setVehicleType("car");
 
 		v2 = new Vehicle();
-		v2.setPerson(person);
 		v2.setRegistrationNumber("CBA-333");
 		v2.setVehicleId(2);
 		v2.setVehicleType("track");

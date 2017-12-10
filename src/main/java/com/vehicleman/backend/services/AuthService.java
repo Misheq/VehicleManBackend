@@ -54,9 +54,9 @@ public class AuthService {
 		}
 
 		manager.setPassword(BCrypt.hashpw(manager.getPassword(), BCrypt.gensalt()));
-		manager = managerDao.createManager(manager);
+		Manager createdManager = managerDao.createManager(manager);
 
-		return Response.status(201).entity(manager)
+		return Response.status(201).entity(createdManager)
 				.header(HttpHeaders.LOCATION, ApiConstants.BASE_URL + "managers/" + manager.getManagerId()).build();
 	}
 

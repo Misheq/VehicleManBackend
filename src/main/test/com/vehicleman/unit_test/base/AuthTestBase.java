@@ -8,11 +8,11 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
 import com.vehicleman.backend.dao.ManagerDAO;
-import com.vehicleman.backend.services.ManagerService;
+import com.vehicleman.backend.services.AuthService;
 
-class ManagerServiceMock extends ManagerService {
+class AuthServiceMock extends AuthService {
 
-	public ManagerServiceMock() {
+	public AuthServiceMock() {
 		super.managerDao = mock(ManagerDAO.class);
 	}
 
@@ -21,16 +21,14 @@ class ManagerServiceMock extends ManagerService {
 	}
 }
 
-public class ManagerTestBase extends JerseyTest {
+public class AuthTestBase extends JerseyTest {
 
-	public static final String ENDPOINT = "managers/";
 	protected ManagerDAO managerDaoMock;
 
 	@Override
 	protected Application configure() {
-		ManagerServiceMock managerServiceMock = new ManagerServiceMock();
-		managerDaoMock = managerServiceMock.getManagerDaoMock();
-		return new ResourceConfig().register(managerServiceMock);
+		AuthServiceMock authServiceMock = new AuthServiceMock();
+		managerDaoMock = authServiceMock.getManagerDaoMock();
+		return new ResourceConfig().register(authServiceMock);
 	}
 }
-
